@@ -1,0 +1,9 @@
+# Game files and everything built from them stay local.
+orig.nosync/
+generated.nosync/
+build.nosync/
+*.ips
+__pycache__/
+.venv
+# DXVK writes <program>_d3d9.log into the working folder.
+*_d3d9.log

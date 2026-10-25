@@ -1,0 +1,37 @@
+{
+ "0xA69438": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ },
+ "0xA694DD": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ },
+ "0xA6AF88": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ },
+ "0xA6B0D8": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ },
+ "0xA6E9D8": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ },
+ "0xA6EB08": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ },
+ "0xA6ED28": {
+  "reg": "eax",
+  "mask": "0x7FF00000",
+  "value": "0x7FF00000"
+ }
+}

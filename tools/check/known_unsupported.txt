@@ -1,0 +1,4 @@
+# UNSUPPORTED lines seen in every good run (boot_log runs 24 and 26). A line matches when it
+# starts with one of these. Add a line here only after the call is triaged as harmless.
+UNSUPPORTED d3dx9: D3DXCompileShader flag 0x200
+UNSUPPORTED ole32.dll!CoCreateInstance: CLSID {4590F811-1D3A-11D0-891F-00AA004B2E24} IID {DC12A687-737F-11CF-884D-00AA004B2E24}

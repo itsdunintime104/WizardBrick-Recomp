@@ -1,0 +1,12 @@
+[project]
+name = "harrypotterrecomp-tools"
+version = "0"
+requires-python = ">=3.12"
+
+[tool.pyright]
+pythonVersion = "3.14"
+# tools/check/reliability.py imports the engine's tools.checks through a sys.path insert of the engine root
+# (the engine/ submodule).
+extraPaths = ["engine"]
+include = ["tools", "tests"]
+exclude = ["**/__pycache__", "**/*.nosync"]

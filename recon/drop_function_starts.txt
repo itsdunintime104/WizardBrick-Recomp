@@ -1,0 +1,20 @@
+# Function starts the PE front end drops. One hex VA per line; '#' starts a comment.
+#
+# Each lies inside the contiguous body of a function that Ghidra found by
+# recursive descent before the coverage passes ran, so it is an internal jump
+# target, not a function entry (tools/ghidra/FindPrologues.java's "evidence"
+# tier takes every call or pointer target). Splitting a function there would
+# turn its internal jumps into tail calls and lose the flags they carry.
+# 0xA6914E (36 bytes) and 0xA6B22D (453 bytes) are hand-written CRT routines;
+# the second has the shape of MSVC memcpy and its jump tables of internal labels.
+0xA6916F
+0xA6B25C
+0xA6B2A5
+0xA6B2CD
+0xA6B2F0
+0xA6B30A
+0xA6B331
+# Ghidra false starts that cut `cmp eax,ebx` from its `je` (notes/lift_review.md
+# group A): 0x718B74 is inside sub_00718B60, 0x7355C3 inside sub_007355B0.
+0x718B74
+0x7355C3

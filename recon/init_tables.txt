@@ -1,0 +1,10 @@
+# CRT initialiser tables: hex VA ranges [first, last) of function pointers that
+# _cinit calls at start-up. One range per line; '#' starts a comment.
+# The PE front end keeps every non-null entry as a function start: most point
+# at code Ghidra never made a function (0xC3B000..0xC42946).
+#
+# __xi_a..__xi_z: 0xA6D329 `push 0xC43C84; push 0xC43964; call __initterm_e`.
+0xC43964 0xC43C84
+# __xc_a..__xc_z: 0xA6D34A `mov esi, 0xC43000` .. `mov edi, 0xC43860`, then the
+# inlined _initterm loop `call eax` at 0xA6D361.
+0xC43000 0xC43860
