@@ -23,6 +23,7 @@ This project is not affiliated with or endorsed by TT Games, Warner Bros. Games,
 - [Get the game files](#get-the-game-files)
 - [Install](#install)
 - [Playing](#playing)
+- [Shader warm-up and stutter](#shader-warm-up-and-stutter)
 - [Saves](#saves)
 - [Status](#status)
 - [Performance](#performance)
@@ -73,7 +74,7 @@ The game has no Mac version, so Steam for Mac does not download it. Use one of t
 
 `setup.sh` checks your Mac, builds DXVK, vkd3d-shader and KosmicKrisp at pinned versions with this repo's patches (about 4 minutes, once), copies the game's exe, checks its sha256, translates it, builds the app and installs it. It never writes to the game folder. `./setup.sh --check` runs only the checks.
 
-At the end, setup builds the game's shader cache, so the first play does not stutter. The game window opens for about 6 minutes and loads every level by itself. Leave it open; it closes by itself. `--no-warm` skips this step; the game then compiles its shaders as you play.
+At the end, setup warms the game's shader cache: the game window opens for about 6 minutes and loads every level by itself. Leave it open; it closes by itself. This cuts most of the stutter, not all of it: see [Shader warm-up and stutter](#shader-warm-up-and-stutter). `--no-warm` skips this step.
 
 Keep the cloned folder: the app loads the game's code from `orig.nosync/` in it. The app remembers the game folder you gave in `HPRECOMP_GAME_DIR`.
 
@@ -110,11 +111,36 @@ The game opens borderless at your display's scaled size and follows your display
 
 Each run writes a log to `~/Library/Logs/HarryPotterRecomp/`. It holds startup messages, warnings and errors, not what you do in the game. The app keeps the newest 20. Attach the log when you report a problem.
 
+## Shader warm-up and stutter
+
+> [!NOTE]
+> Expect some stutter in your first hours of play. It fades as you visit more of the game.
+
+The Windows game compiles its shaders while you play. On a Mac each new shader then goes through DXVK and Apple's Metal compiler, and the game waits until that is done. The wait is a short hitch, or 1 to 3 seconds when a new level starts. A shader is compiled only once: it is kept in the caches below, so later visits are smooth.
+
+The warm-up at the end of `setup.sh` compiles most shaders before your first play. It loads each level and draws one frame of it. Spells, effects, characters and cutscenes that this frame does not show are still compiled the first time you see them, so some short stutter remains at first.
+
+| Cache | Where | Holds |
+|---|---|---|
+| Game shader cache | `~/Library/Application Support/HarryPotterRecomp/…/CachedShaders` | The game's compiled shaders |
+| Apple Metal cache | `$(getconf DARWIN_USER_CACHE_DIR)local.harrypotterrecomp` | The GPU code Apple's compiler made; most of the compile time |
+| DXVK cache | `~/.cache/dxvk` | DXVK's shader data |
+
+Do not delete these caches. The stutter comes back until they are rebuilt.
+
+The stutter can come back:
+
+- After an update of this project that changes the shader compiler. The app then clears the game shader cache at the next launch. Run `./setup.sh` again: it skips the steps that are done and warms the cache again.
+- If the warm-up was skipped (`--no-warm`) or did not finish. Run `./setup.sh` again.
+- Possibly after a macOS update, if macOS rebuilds its Metal cache. This is not tested yet.
+
+With caches filled by play, an 11-minute session had 0.09 late frames per second (see [Performance](#performance)).
+
 ## Saves
 
 The game writes its saves and settings to its Windows profile folder. The app redirects that folder to `~/Library/Application Support/HarryPotterRecomp`. It never writes to the game folder.
 
-The game's shader cache is in the same folder. If an update changes the shader compiler, the app clears the cache at the next launch; run `./setup.sh` again to rebuild it.
+The game's shader cache is in the same folder (see [Shader warm-up and stutter](#shader-warm-up-and-stutter)).
 
 > [!WARNING]
 > Back up `~/Library/Application Support/HarryPotterRecomp` before you play.
@@ -123,7 +149,7 @@ The game's shader cache is in the same folder. If an update changes the shader c
 
 The menus, saves, the Year 1 opening, the Leaky Cauldron, Diagon Alley and Gringotts work, with sound. Testing so far: a 20-minute unattended run and several played sessions, without a crash.
 
-- A few shaders are still compiled during play, so a first visit can stutter briefly.
+- Short stutter the first time a new area, spell or effect appears, while its shaders compile. See [Shader warm-up and stutter](#shader-warm-up-and-stutter).
 - Scene changes show a black screen for 1-5 seconds.
 - Some cutscenes show faint trails behind moving objects.
 - Controllers are not tested yet.
@@ -143,7 +169,7 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 | "game folder not found" | Set `HPRECOMP_GAME_DIR` to the folder that holds `LEGOHarryPotter.exe` |
 | `setup.sh` says the sha256 does not match | Only build 660 works. Run SteamCMD's `app_update 21130 validate` again |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
-| Stutter on the first launch | The game is rebuilding its shader cache. It goes away after the areas have been visited once |
+| Short stutter during play | Shaders compiling for the first time. It fades as you revisit areas. If it happens everywhere, the cache was cleared: run `./setup.sh` again. See [Shader warm-up and stutter](#shader-warm-up-and-stutter) |
 
 ## Building and development
 
