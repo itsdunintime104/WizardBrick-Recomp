@@ -3,7 +3,6 @@
 # Each is the target of a 5-byte ILT thunk (`E9 rel32`) that Ghidra found as a
 # function, while the target itself is in no function list entry. The lift then
 # emits the thunk's jmp as a call to a no-op stub (notes/stub_triage.md class a).
-# Not read by engine/windows/tools/pe/analyze_pe.py yet.
 0x535240
 0x474550
 # SoundEvent thread start: 0xA37928 `mov dword [esp+8], 0xA37730` stores it as
@@ -11,3 +10,9 @@
 # (`56 8B 35 04 E9 0D 01` push esi; mov esi,[IAT]) lie in the gap between
 # FUN_00a37710 (ends 0xA3772E) and FUN_00a37760; no Ghidra function covers them.
 0xA37730
+# ILT thunks that .data tables hold, with no function in the lift: 0x404066
+# `jmp 0x43D3C0` (8 dwords, first 0xE1E6C8) and 0x40406B `jmp 0x518A00` (10 dwords,
+# first 0xE144B8). Ghidra began a function at 0x404067, one byte into the first
+# thunk (drop_function_starts.txt).
+0x404066
+0x40406B
