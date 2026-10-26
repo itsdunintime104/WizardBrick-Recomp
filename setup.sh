@@ -2,7 +2,7 @@
 # One-command setup: checks the machine, finds your own Windows copy of
 # LEGO Harry Potter: Years 1-4, translates it, builds the native program and
 # installs "LEGO Harry Potter Years 1-4.app".
-# Usage: ./setup.sh [--check] [--force] [--no-install] [--no-warm] [--dry-run] [--help]
+# Usage: ./setup.sh [--check] [--force] [--no-install] [--no-warm] [--dry-run] [--help] [game folder]
 set -eu
 
 ROOT=$(cd "$(dirname "$0")" && pwd)
@@ -29,12 +29,19 @@ FORCE=0
 INSTALL=1
 WARM=1
 DRY_RUN=0
+GAME_ARG=""
 
 usage() {
     cat <<USAGE
-Usage: ./setup.sh [options]
+Usage: ./setup.sh [options] [game folder]
 
 Builds the app from your own Steam copy of the Windows game.
+
+game folder   The folder that holds $GAME_EXE and GAME*.DAT,
+              or the path of $GAME_EXE. Without it, setup.sh
+              searches Steam under Wine, CrossOver and Whisky, other Steam
+              libraries, GOG installs, ~/Games and external drives, and asks
+              for the folder if it finds none.
 
 Options:
   --check       Check the requirements only, then stop.
@@ -45,8 +52,7 @@ Options:
   --help        Show this text.
 
 Environment:
-  HPRECOMP_GAME_DIR  the folder that holds $GAME_EXE and GAME*.DAT,
-                     if it is not in one of the folders setup.sh searches.
+  HPRECOMP_GAME_DIR  the game folder, if you do not give it as an argument.
   HPRECOMP_DEPS_DIR  where tools/deps builds and installs the graphics
                      libraries (default: build.nosync/deps).
 USAGE
@@ -60,7 +66,12 @@ for arg in "$@"; do
         --no-warm) WARM=0 ;;
         --dry-run) DRY_RUN=1 ;;
         --help|-h) usage; exit 0 ;;
-        *) echo "setup: unknown option: $arg" >&2; usage >&2; exit 2 ;;
+        -*) echo "setup: unknown option: $arg" >&2; usage >&2; exit 2 ;;
+        *)
+            if [ -n "$GAME_ARG" ]; then
+                echo "setup: give only one game folder" >&2; usage >&2; exit 2
+            fi
+            GAME_ARG=$arg ;;
     esac
 done
 
@@ -213,25 +224,150 @@ preflight() {
     fi
 }
 
-# Print the first folder that holds the game: HPRECOMP_GAME_DIR, then Steam
-# under Wine, CrossOver or Whisky, then a Mac Steam library with the Windows files.
-find_game_dir() {
+# Print the Wine prefixes: ~/.wine*, CrossOver and Whisky bottles, Wine app
+# wrappers in ~/Applications, and Heroic prefixes.
+wine_prefixes() {
+    for p in "$HOME"/.wine* \
+        "$HOME/Library/Application Support/CrossOver/Bottles"/* \
+        "$HOME/Library/Containers/com.isaacmarovitz.Whisky/Bottles"/* \
+        "$HOME/Applications"/*.app/Contents/SharedSupport/prefix \
+        "$HOME/Games/Heroic/Prefixes"/*; do
+        if [ -d "$p/drive_c" ]; then printf '%s\n' "$p"; fi
+    done
+}
+
+# Print each library folder in the libraryfolders.vdf of the Steam in $1.
+# $2 is the Wine prefix of that Steam (empty for Mac Steam); a Windows path
+# such as D:\\SteamLibrary maps through its dosdevices/d: link.
+steam_libraries() {
+    vdf="$1/steamapps/libraryfolders.vdf"
+    [ -f "$vdf" ] || return 0
+    sed -n 's/^[[:space:]]*"path"[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$vdf" | while IFS= read -r lib; do
+        case "$lib" in
+            [A-Za-z]:*)
+                if [ -n "$2" ]; then
+                    drive=$(printf '%s' "$lib" | cut -c 1 | tr 'A-Z' 'a-z')
+                    rest=$(printf '%s' "${lib#?:}" | sed -e 's/\\\\/\//g' -e 's/\\/\//g')
+                    printf '%s\n' "$2/dosdevices/$drive:$rest"
+                fi ;;
+            /*) printf '%s\n' "$lib" ;;
+        esac
+    done
+}
+
+# Print every folder setup.sh searches for the game, in order.
+game_search_dirs() {
     STEAM_REL="Program Files (x86)/Steam/steamapps/common/LEGO Harry Potter"
-    for dir in "${HPRECOMP_GAME_DIR:-}" \
-        "$HOME"/.wine*/drive_c/"$STEAM_REL" \
+    for dir in "$HOME"/.wine*/drive_c/"$STEAM_REL" \
         "$HOME/Library/Application Support/CrossOver/Bottles"/*/drive_c/"$STEAM_REL" \
         "$HOME/Library/Containers/com.isaacmarovitz.Whisky/Bottles"/*/drive_c/"$STEAM_REL" \
-        "$HOME/Library/Application Support/Steam/steamapps/common/LEGO Harry Potter"; do
-        [ -n "$dir" ] && [ -f "$dir/$GAME_EXE" ] && { echo "$dir"; return; }
+        "$HOME/Library/Application Support/Steam/steamapps/common/LEGO Harry Potter" \
+        "$HOME/Games/LEGO Harry Potter"; do
+        printf '%s\n' "$dir"
     done
+    wine_prefixes | while IFS= read -r p; do
+        for dir in "$p/drive_c/GOG Games/"LEGO*Harry*Potter* \
+            "$p/drive_c/Program Files (x86)/GOG Galaxy/Games/"LEGO*Harry*Potter*; do
+            printf '%s\n' "$dir"
+        done
+    done
+    {
+        wine_prefixes | while IFS= read -r p; do
+            steam_libraries "$p/drive_c/Program Files (x86)/Steam" "$p"
+        done
+        steam_libraries "$HOME/Library/Application Support/Steam" ""
+    } | while IFS= read -r lib; do
+        printf '%s\n' "$lib/steamapps/common/LEGO Harry Potter"
+    done
+    for vol in /Volumes/*; do
+        # Skip the link to the boot volume.
+        if [ -L "$vol" ]; then continue; fi
+        for dir in "$vol/SteamLibrary/steamapps/common/LEGO Harry Potter" \
+            "$vol/Steam/steamapps/common/LEGO Harry Potter" \
+            "$vol/Program Files (x86)/Steam/steamapps/common/LEGO Harry Potter" \
+            "$vol/Games/LEGO Harry Potter" "$vol/LEGO Harry Potter" \
+            "$vol/GOG Games/"LEGO*Harry*Potter*; do
+            printf '%s\n' "$dir"
+        done
+    done
+}
+
+# Print the folder for $1, a game folder or the path of its exe, as an
+# absolute path. Fails when the folder has no game exe.
+game_dir_from() {
+    p=${1%/}
+    case "$p" in
+        "$GAME_EXE") p=. ;;
+        */"$GAME_EXE") p=${p%/*} ;;
+    esac
+    case "$p" in /*) ;; *) p="./$p" ;; esac
+    [ -f "$p/$GAME_EXE" ] || return 1
+    (cd "$p" && pwd -P)
+}
+
+# Set GAME_DIR to the first folder found whose exe matches BINARY_SHA256,
+# else the first found, else empty. Lists the copies when it finds more than one.
+find_game_dir() {
+    found=$(game_search_dirs | while IFS= read -r dir; do
+        if [ -f "$dir/$GAME_EXE" ]; then (cd "$dir" && pwd -P); fi
+    done | awk '!seen[$0]++')
+    GAME_DIR=""
+    [ -n "$found" ] || return 0
+    count=$(printf '%s\n' "$found" | wc -l | tr -d ' ')
+    if [ "$count" -gt 1 ]; then echo "found $count copies of $GAME_EXE:"; fi
+    while IFS= read -r dir; do
+        sum=$(shasum -a 256 "$dir/$GAME_EXE" | awk '{print $1}')
+        if [ "$sum" = "$BINARY_SHA256" ]; then
+            label="matches"
+            if [ -z "$GAME_DIR" ]; then GAME_DIR=$dir; fi
+        else
+            label="different build"
+        fi
+        if [ "$count" -gt 1 ]; then echo "  $dir ($label)"; fi
+    done <<EOF
+$found
+EOF
+    if [ -z "$GAME_DIR" ]; then GAME_DIR=$(printf '%s\n' "$found" | head -n 1); fi
+}
+
+# Clean a path dragged into Terminal: trim spaces, strip one pair of quotes,
+# undo backslash escapes.
+clean_path() {
+    printf '%s\n' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
+        -e "s/^'\(.*\)'\$/\1/" -e 's/^"\(.*\)"$/\1/' -e 's/\\\(.\)/\1/g'
+}
+
+# Ask for the game folder, up to 3 times. Sets GAME_DIR; fails if no answer has the exe.
+ask_game_dir() {
+    echo "Searched Steam under Wine, CrossOver and Whisky, Mac Steam, Steam libraries, GOG folders, ~/Games and /Volumes."
+    tries=0
+    while [ "$tries" -lt 3 ]; do
+        tries=$((tries + 1))
+        printf 'Drag the LEGO Harry Potter folder (or %s) into this window and press Return: ' "$GAME_EXE"
+        IFS= read -r line || return 1
+        answer=$(clean_path "$line")
+        if GAME_DIR=$(game_dir_from "$answer"); then return 0; fi
+        echo "setup: $GAME_EXE not found in $answer" >&2
+    done
+    GAME_DIR=""
+    return 1
 }
 
 locate_and_copy_game() {
     step "2/9 Locating the game"
-    GAME_DIR=$(find_game_dir)
+    given=${GAME_ARG:-${HPRECOMP_GAME_DIR:-}}
+    if [ -n "$given" ]; then
+        GAME_DIR=$(game_dir_from "$given") || fail "$GAME_EXE not found in $given"
+    else
+        find_game_dir
+        if [ -z "$GAME_DIR" ] && [ "$DRY_RUN" -eq 0 ] && [ -t 0 ]; then
+            ask_game_dir || GAME_DIR=""
+        fi
+    fi
     if [ -z "$GAME_DIR" ]; then
         msg="$GAME_EXE not found. Install LEGO Harry Potter: Years 1-4 from Steam (Windows version),
-or set HPRECOMP_GAME_DIR to the folder that holds $GAME_EXE."
+or set HPRECOMP_GAME_DIR to the folder that holds $GAME_EXE,
+or run ./setup.sh \"<game folder>\"."
         [ "$DRY_RUN" -eq 1 ] || fail "$msg"
         echo "setup: $msg" >&2
         GAME_DIR='<game folder>'
