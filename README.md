@@ -2,6 +2,8 @@
 > This project does not include any game files. You need your own Steam copy of LEGO Harry Potter: Years 1-4 (the Windows version).
 
 <h1 align="center">
+  <img src="docs/media/gameplay.gif" alt="LEGO Harry Potter: Years 1-4 running natively on an M1 Max" width="640">
+  <br>
   Wizard Bricks Recompiled
 </h1>
 
@@ -10,6 +12,8 @@
   <img src="https://img.shields.io/badge/status-playable-brightgreen" alt="Status: playable">
   <img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License: GPL-3.0">
 </p>
+
+<p align="center"><i>24-second video: <a href="docs/media/gameplay.mp4">gameplay.mp4</a></i></p>
 
 LEGO Harry Potter: Years 1-4 (TT Games, 2010) was released on Steam for Windows only. This project translates the game's 32-bit Windows code to C ahead of time and compiles it into a native arm64 app for Apple Silicon. It does not use Wine or an emulator. Direct3D 9 calls go to [DXVK](https://github.com/doitsujin/dxvk), which draws with Vulkan on [KosmicKrisp](https://docs.mesa3d.org/drivers/kosmickrisp.html), Mesa's Vulkan driver for Metal.
 
@@ -161,6 +165,10 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 | Scene | Result |
 |---|---|
 | Played by hand, 11 minutes, shader cache warm | 120 FPS; 0.09 late frames per second; no frame over 100 ms during play |
+
+<img src="docs/media/screenshot.jpg" alt="The Gryffindor dormitory at 2592 × 1626 with the overlay" width="640">
+
+*The Gryffindor dormitory at 2592 × 1626 with the overlay (Cmd+F): 119 FPS, 1% low 63.4 FPS, no frame over 33 ms in the last 240.*
 
 ## Troubleshooting
 
