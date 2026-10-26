@@ -68,9 +68,9 @@ The 602 is above the earlier 590 because this rule also counts targets whose own
 
 ## Rebuild result (CFG function list)
 
-Status: `tools/pe/analyze_pe.py` builds the function list with `find_functions`. `tests/test_analyze_pe.py`: 4 passed. Pyright: 0 errors. The lift of this list is running: PID 43103, log `~/Developer/hp-lift-cfg/lift.log`, report `~/Developer/hp-lift-cfg/generated/lift_report.json`. Engine: `~/Developer/MacRecomp-hp-int` (feat/pe-integration, 800aa75). `MacRecomp-hp-review` cannot run it, because its run.py has no `--seh-prolog` and `run_lift_pe.py` now always passes that flag.
+Status: `tools/pe/analyze_pe.py` builds the function list with `find_functions`. `tests/test_analyze_pe.py`: 4 passed. Pyright: 0 errors. The lift of this list is running: PID 43103, log `<work>/hp-lift-cfg/lift.log`, report `<work>/hp-lift-cfg/generated/lift_report.json`. Engine: `<work>/MacRecomp-hp-int` (feat/pe-integration, 800aa75). `MacRecomp-hp-review` cannot run it, because its run.py has no `--seh-prolog` and `run_lift_pe.py` now always passes that flag.
 
-Run (about 20 s): `analyze_pe.py orig.nosync/lhp_win32.exe --ghidra-functions recon/ghidra_functions.json --ghidra-data recon/ghidra_text_data.json --drop-starts recon/drop_function_starts.txt --add-starts recon/add_function_starts.txt -o ~/Developer/hp-lift-cfg/analysis.json`.
+Run (about 20 s): `analyze_pe.py orig.nosync/lhp_win32.exe --ghidra-functions recon/ghidra_functions.json --ghidra-data recon/ghidra_text_data.json --drop-starts recon/drop_function_starts.txt --add-starts recon/add_function_starts.txt -o <work>/hp-lift-cfg/analysis.json`.
 
 Rule. Ghidra starts are candidates only. A start is kept on one of these kinds of evidence:
 - listed: the PE entry, an export, or an entry in recon/add_function_starts.txt;
@@ -133,8 +133,8 @@ Switch tables. `recon/switch_tables.json` "switch" (passed to the lifter as reg_
 Incremental-link thunks: in the current list, every 5-byte `jmp rel32` start has its target as a start (3,338 thunks, 0 targets missing; 3,183 targets carry thunk evidence). 0x40366B and its target 0x5349A0 (boot_log failure 5) are both starts, checked by a test. Failure 5 came from the list that predates the initialiser seeds. Of 3,352 Ghidra 5-byte jmp candidates, 16 are not starts; samples 0xA7B1EE and 0xA9BB17 lie inside other bodies (internal jmps), and no call reaches them.
 
 recon/analysis.json (44,443 functions) is written by:
-`~/Documents/GitHub/HobbitRecomp/.venv/bin/python -I tools/pe/analyze_pe.py orig.nosync/lhp_win32.exe --ghidra-functions recon/ghidra_functions.json --ghidra-data recon/ghidra_text_data.json --drop-starts recon/drop_function_starts.txt --add-starts recon/add_function_starts.txt --init-tables recon/init_tables.txt -o recon/analysis.json`
-It is byte-identical to `~/Developer/hp-lift-cfg/analysis.json`, the input of the full lift started 2026-10-24 04:17 (MacRecomp-hp-int, no lockf).
+`<work>/HobbitRecomp/.venv/bin/python -I tools/pe/analyze_pe.py orig.nosync/lhp_win32.exe --ghidra-functions recon/ghidra_functions.json --ghidra-data recon/ghidra_text_data.json --drop-starts recon/drop_function_starts.txt --add-starts recon/add_function_starts.txt --init-tables recon/init_tables.txt -o recon/analysis.json`
+It is byte-identical to `<work>/hp-lift-cfg/analysis.json`, the input of the full lift started 2026-10-24 04:17 (MacRecomp-hp-int, no lockf).
 
 ### Full lift of the CFG list (2026-10-24 04:17-04:31, MacRecomp-hp-int, analysis = recon/analysis.json, 44,443 functions)
 

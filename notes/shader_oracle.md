@@ -27,18 +27,18 @@ The 188 cache names (`6xxxxxxxx.DAT`) share no name with the 336 developer cache
 
 ## Where the dump lives
 
-- `~/Developer/hp-shader-oracle/out/dump/<index>.hlsl`: exact `pSrcData`, `SrcDataLen` bytes.
+- `<work>/hp-shader-oracle/out/dump/<index>.hlsl`: exact `pSrcData`, `SrcDataLen` bytes.
 - `<index>.json`: entry, profile, flags, defines, include flag, HRESULT, sizes, ms, thread.
 - `<index>.bin`: `*ppShader` bytecode (with its CTAB). `<index>.err`: `*ppErrorMsgs` text.
-- `~/Developer/hp-shader-oracle/out/cache/`: the game's own CachedShaders output.
-- `~/Developer/hp-shader-oracle/out/summary.json`, `out/wine.log`.
-- Game clone `~/Developer/hp-shader-oracle/game` (APFS clone, proxy DLLs copied in), prefix `~/Developer/hp-shader-oracle/prefix`, built DLLs `~/Developer/hp-shader-oracle/dll`.
+- `<work>/hp-shader-oracle/out/cache/`: the game's own CachedShaders output.
+- `<work>/hp-shader-oracle/out/summary.json`, `out/wine.log`.
+- Game clone `<work>/hp-shader-oracle/game` (APFS clone, proxy DLLs copied in), prefix `<work>/hp-shader-oracle/prefix`, built DLLs `<work>/hp-shader-oracle/dll`.
 
 ## Commands
 
 ```sh
 G="$HOME/.wine-steam-11/drive_c/Program Files (x86)/Steam/steamapps/common/LEGO Harry Potter"
-O=$HOME/Developer/hp-shader-oracle
+O=<work>/hp-shader-oracle
 cp -c -R "$G" $O/game
 cabextract -d CABDIR "$G/redist/DirectX/Mar2009_d3dx9_41_x86.cab"   # d3dx9_41.dll, PE32 i386
 tools/shaders/oracle_dump/build.sh CABDIR/d3dx9_41.dll $O/dll
@@ -77,8 +77,8 @@ python3 -I tools/shaders/oracle_dump/summarize.py $O/out/dump $O/out/summary.jso
 
 ## Microsoft answer for the vkd3d E5021 (Inf/NaN) case
 
-Command (from `~/Developer/hp-shader-oracle/dll`, same prefix, `WINEDLLOVERRIDES=...;d3dx9ms=n`):
-`wine compile_ms.exe <src> <entry> ps_3_0 0x200 <out prefix>`. Output in `~/Developer/hp-shader-oracle/out/nan/`. Compiler banner: `Microsoft (R) HLSL Shader Compiler 9.26.952.2844` (d3dx9_41).
+Command (from `<work>/hp-shader-oracle/dll`, same prefix, `WINEDLLOVERRIDES=...;d3dx9ms=n`):
+`wine compile_ms.exe <src> <entry> ps_3_0 0x200 <out prefix>`. Output in `<work>/hp-shader-oracle/out/nan/`. Compiler banner: `Microsoft (R) HLSL Shader Compiler 9.26.952.2844` (d3dx9_41).
 
 | Input | Flags | Result |
 |---|---|---|

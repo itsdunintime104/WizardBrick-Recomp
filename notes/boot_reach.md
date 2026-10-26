@@ -19,7 +19,7 @@ Status: done. Static only; nothing was run. Scripts and raw output: job tmp `boo
 Items not covered by any fix in flight: **16** (6 stubs, 8 import branches, 2 jumps). Add 11 switch tables if the re-lift does not resolve them.
 
 Caveats:
-- This lift predates the engine fixes and the CFG list. New-list status is a span check on `~/Developer/hp-lift-cfg/analysis.json` (target is a start, or lies in the same span as its caller), not a re-lift.
+- This lift predates the engine fixes and the CFG list. New-list status is a span check on `<work>/hp-lift-cfg/analysis.json` (target is a start, or lies in the same span as its caller), not a re-lift.
 - The `int` UNIMPL sites (18 in the full lift) are not reached.
 - "start" means the jump becomes a tail call to a lifted function. That is correct only when the target is a real tail; not checked per site.
 
@@ -506,7 +506,7 @@ Ranked by distance there is nothing to rank: the only hits are at d=2 (0x7FFFFF 
 
 ### What the runtime does on an indirect call to a non-start
 
-The runtime does not continue silently. It prints the address and exits with status 3 (engine `tools/xrecomp/include/recomp_types.h`, `runtime/src/recomp_glue.c` on feat/pe-lift-gaps in `~/Developer/MacRecomp-hp`):
+The runtime does not continue silently. It prints the address and exits with status 3 (engine `tools/xrecomp/include/recomp_types.h`, `runtime/src/recomp_glue.c` on feat/pe-lift-gaps in `<work>/MacRecomp-hp`):
 
 - `RECOMP_ICALL_SAFE_AT` / `_AT_CC` (recomp_types.h:1693-1737): if `RECOMP_ICALL_IS_CODE(va)` fails, it calls `recomp_icall_not_code_log` ("indirect call to non-code VA 0x%08X", recomp_glue.c:135). Otherwise it tries `recomp_lookup_manual`, then `recomp_lookup` (an exact match in the dispatch table, translator.py:3857), then `recomp_lookup_kernel` (host thunks). If all three miss, it calls `recomp_icall_fail_log`.
 - `RECOMP_ITAIL` (recomp_types.h:1744-1756): the same lookups, with no code-range check.

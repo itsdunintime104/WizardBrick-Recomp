@@ -1,6 +1,6 @@
 # Game speed against frame rate
 
-Date: 2026-10-24. Binary: ~/Developer/hp-pkg-build/lhp_boot (commit 4533590, -O2, default desktop size 2056x1290, forced vsync at 120 Hz).
+Date: 2026-10-24. Binary: <work>/hp-pkg-build/lhp_boot (commit 4533590, -O2, default desktop size 2056x1290, forced vsync at 120 Hz).
 
 ## Verdict
 

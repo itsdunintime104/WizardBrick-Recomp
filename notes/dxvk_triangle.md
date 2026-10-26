@@ -6,7 +6,7 @@ Date: 2026-10-24. Machine: Apple M1 Max, macOS 26.6.2 (25G83), arm64.
 
 Upstream DXVK needs all four `jm2/dxvk` patches. Patches 1-2 are needed to build and load. Patches 3-4 are needed for DXVK to accept KosmicKrisp as an adapter.
 
-**The SDL2 window backend also works on KosmicKrisp (2026-10-24 01:07).** The same checks pass with the same pixel values, using DXVK built with `-Dnative_sdl2=enabled -Dnative_sdl3=disabled`, the test window created through SDL2, and `DXVK_WSI_DRIVER=SDL2`. That build is installed in `~/Developer/dxvk-install`. See "Linking the game".
+**The SDL2 window backend also works on KosmicKrisp (2026-10-24 01:07).** The same checks pass with the same pixel values, using DXVK built with `-Dnative_sdl2=enabled -Dnative_sdl3=disabled`, the test window created through SDL2, and `DXVK_WSI_DRIVER=SDL2`. That build is installed in `<work>/dxvk-install`. See "Linking the game".
 
 ## Results
 
@@ -83,7 +83,7 @@ err:   DxvkInstance::createInstance: Failed to create Vulkan instance
 libc++abi: terminating due to uncaught exception of type dxvk::DxvkError
 ```
 
-Cause: DXVK does not set the portability-enumeration flag, and MoltenVK is marked `is_portability_driver`. To get past this without patching DXVK, I used a copy of the manifest with `"is_portability_driver": false` (`~/Developer/hp-dxvk/icd/MoltenVK_icd_noportability.json`). Result:
+Cause: DXVK does not set the portability-enumeration flag, and MoltenVK is marked `is_portability_driver`. To get past this without patching DXVK, I used a copy of the manifest with `"is_portability_driver": false` (`<work>/hp-dxvk/icd/MoltenVK_icd_noportability.json`). Result:
 
 ```
 info:  Found device: Apple M1 Max (MoltenVK 0.2.2210)
@@ -146,7 +146,7 @@ All of these are in `tools/dxvk_test/build.sh` (`build.sh all` builds DXVK, buil
 
 ```
 export PATH=/opt/homebrew/bin:$PATH
-cd ~/Developer/hp-dxvk
+cd <work>/hp-dxvk
 git clone --recursive https://github.com/doitsujin/dxvk.git
 cd dxvk
 git remote add jm2 https://github.com/jm2/dxvk.git && git fetch jm2 kisakcod-macos
@@ -156,20 +156,20 @@ SDK=$(xcrun --show-sdk-path)
 CXXFLAGS="-nostdinc++ -isystem $SDK/usr/include/c++/v1" meson setup ../build-sdl2 --buildtype=release \
   -Denable_dxgi=false -Denable_d3d8=false -Denable_d3d10=false -Denable_d3d11=false -Denable_d3d9=true \
   -Dnative_sdl2=enabled -Dnative_sdl3=disabled -Dnative_glfw=disabled -Dnative_macos=true \
-  --prefix=~/Developer/dxvk-install
+  --prefix=<work>/dxvk-install
 /usr/bin/lockf -k <lock> ninja -C ../build-sdl2 -j6
 meson install -C ../build-sdl2
 ```
 
 The four patches do not change any window-backend code under `src/wsi`. Patch 1 changes `src/util/util_win32_compat.h`, which both SDL backends use for `LoadLibraryA`/`GetProcAddress`.
 
-The first, SDL3 build used the same commands with `-Dnative_sdl3=enabled -Dnative_sdl2=disabled`, build directory `../build-up`, and `meson install --destdir ../stage`. Its output is in `~/Developer/hp-dxvk/stage/opt/homebrew/lib/`.
+The first, SDL3 build used the same commands with `-Dnative_sdl3=enabled -Dnative_sdl2=disabled`, build directory `../build-up`, and `meson install --destdir ../stage`. Its output is in `<work>/hp-dxvk/stage/opt/homebrew/lib/`.
 
-Run: `VK_DRIVER_FILES=<manifest> DXVK_WSI_DRIVER=SDL2 DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib ~/Developer/hp-dxvk/test/d3d9_triangle`
+Run: `VK_DRIVER_FILES=<manifest> DXVK_WSI_DRIVER=SDL2 DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib <work>/hp-dxvk/test/d3d9_triangle`
 
 ## Linking the game
 
-Install prefix: `~/Developer/dxvk-install` (DXVK master `02e2028c` + the 4 patches, d3d9 only, SDL2 window backend, `-Dnative_macos=true`, release build).
+Install prefix: `<work>/dxvk-install` (DXVK master `02e2028c` + the 4 patches, d3d9 only, SDL2 window backend, `-Dnative_macos=true`, release build).
 
 | Path | Content |
 |---|---|
@@ -181,7 +181,7 @@ Install prefix: `~/Developer/dxvk-install` (DXVK master `02e2028c` + the 4 patch
 ### Compile and link a C file
 
 ```
-DXVK=~/Developer/dxvk-install
+DXVK=<work>/dxvk-install
 clang -std=c11 -I$DXVK/include/dxvk -I/opt/homebrew/include/SDL2 -c game.c -o game.o
 clang game.o -o game -L$DXVK/lib -ldxvk_d3d9 -Wl,-rpath,$DXVK/lib -L/opt/homebrew/lib -lSDL2
 ```
@@ -276,9 +276,9 @@ I wrote no DXVK patches of my own.
 
 - Test source: `tools/dxvk_test/d3d9_triangle.cpp` (SDL2)
 - C link probe: `tools/dxvk_test/link_probe.c`
-- Build and run script: `tools/dxvk_test/build.sh` (SDL2 build, installs to `~/Developer/dxvk-install`)
-- Durable install: `~/Developer/dxvk-install/{lib,include/dxvk}`
-- SDL2 build tree: `~/Developer/hp-dxvk/build-sdl2`; run logs for each driver: `<job tmp>/dxvk-logs/` (job scratch; not durable)
+- Build and run script: `tools/dxvk_test/build.sh` (SDL2 build, installs to `<work>/dxvk-install`)
+- Durable install: `<work>/dxvk-install/{lib,include/dxvk}`
+- SDL2 build tree: `<work>/hp-dxvk/build-sdl2`; run logs for each driver: `<job tmp>/dxvk-logs/` (job scratch; not durable)
 - Patch copies: `tools/dxvk_test/patches/0001..0004-*.patch`
-- DXVK source (branch `hp-macos`), build tree, stage, test binary: `~/Developer/hp-dxvk/{dxvk,build-up,stage,test}`
-- Raw logs: `~/Developer/hp-dxvk/{kk-run1,kk-run2,mvk-run1,mvk-run2,run-all}.log`; vulkaninfo dumps: `~/Developer/hp-dxvk/icd/vulkaninfo-{kk,mvk}.txt`
+- DXVK source (branch `hp-macos`), build tree, stage, test binary: `<work>/hp-dxvk/{dxvk,build-up,stage,test}`
+- Raw logs: `<work>/hp-dxvk/{kk-run1,kk-run2,mvk-run1,mvk-run2,run-all}.log`; vulkaninfo dumps: `<work>/hp-dxvk/icd/vulkaninfo-{kk,mvk}.txt`

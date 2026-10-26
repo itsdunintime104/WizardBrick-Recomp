@@ -6,8 +6,8 @@ same as `orig.nosync/lhp_win32.exe`) from start-up through its first frames.
 Compare it with our boot's import trace to find the first divergence.
 
 Files (outside git):
-- `~/Developer/hp-wine-oracle/trace/golden.log`: raw Wine log, 259 MB.
-- `~/Developer/hp-wine-oracle/trace/golden.jsonl`: filtered, 491,241 events, 81 MB.
+- `<work>/hp-wine-oracle/trace/golden.log`: raw Wine log, 259 MB.
+- `<work>/hp-wine-oracle/trace/golden.jsonl`: filtered, 491,241 events, 81 MB.
 - `run1_gl_crash.log`, `run2_vk_createdevice_fail.log`, `run3.log`: failed and earlier runs (evidence below).
 
 Tools: `tools/trace/filter_relay.py` (log -> JSONL + milestone summary),
@@ -15,8 +15,8 @@ Tools: `tools/trace/filter_relay.py` (log -> JSONL + milestone summary),
 
 ## Recipe
 
-- Game: APFS clone `cp -cR "<owner prefix>/.../common/LEGO Harry Potter" ~/Developer/hp-wine-oracle/game` (used about 156 KB of new space).
-- Prefix: `WINEPREFIX=~/Developer/hp-wine-oracle/prefix`, `wineboot -i`, Wine Staging 11.18 (wow64) from `~/wine-11.3/Wine Staging.app`. Builtin d3d9 (wined3d), default **GL** renderer. No DXVK or DXMT.
+- Game: APFS clone `cp -cR "<owner prefix>/.../common/LEGO Harry Potter" <work>/hp-wine-oracle/game` (used about 156 KB of new space).
+- Prefix: `WINEPREFIX=<work>/hp-wine-oracle/prefix`, `wineboot -i`, Wine Staging 11.18 (wow64) from `~/wine-11.3/Wine Staging.app`. Builtin d3d9 (wined3d), default **GL** renderer. No DXVK or DXMT.
 - Registry (HKCU): `Software\Wine\Drivers Audio=""` (no sound). `Software\Wine\Debug RelayFromInclude=LEGOHarryPotter.exe` and `RelayExclude=<Wine default list>`. **Delete the default `RelayFromExclude`**: when an exclude list exists, Wine ignores the include list.
 - Run, from the game folder:
   `WINEDEBUG=+relay,+seh,+loaddll,+threadname,+timestamp,+d3d9 perl -e 'alarm 90; exec @ARGV' wine .../game/LEGOHarryPotter.exe -Windowed > trace/golden.log 2>&1; wineserver -k`
@@ -94,7 +94,7 @@ Notes:
 ## Compare tool
 
 ```
-python -I tools/trace/compare.py ~/Developer/hp-wine-oracle/trace/golden.jsonl <job tmp>/boot/runN.log [--thread main|Render|m_readThread|<tid>] [--context 8] [--ignore A,B] [--keep A,B] [--rets 5]
+python -I tools/trace/compare.py <work>/hp-wine-oracle/trace/golden.jsonl <job tmp>/boot/runN.log [--thread main|Render|m_readThread|<tid>] [--context 8] [--ignore A,B] [--keep A,B] [--rets 5]
 ```
 
 Method: per thread, drop timing/lock calls and the `-norelay` calls, map Wine

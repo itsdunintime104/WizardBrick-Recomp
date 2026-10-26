@@ -108,7 +108,7 @@ float4 main() : COLOR
 
 ## Real shaders (game capture, notes/shader_oracle.md)
 
-Inputs: `~/Developer/hp-shader-oracle/out/dump`, 386 compile calls, 286 unique (source, entry, profile, flags). Bytecode `.bin` is Microsoft `d3dx9_41`.
+Inputs: `<work>/hp-shader-oracle/out/dump`, 386 compile calls, 286 unique (source, entry, profile, flags). Bytecode `.bin` is Microsoft `d3dx9_41`.
 
 | Check | Result |
 |---|---|
@@ -130,7 +130,7 @@ Scratch evidence (job dir, not durable): `dxvk-sm3/jobs_real.txt`, `real_sweep.l
   (`git apply` in the source tree). Why: notes/render_artifacts.md.
 - Build in the configured tree: `PATH=/opt/homebrew/opt/bison/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin make -j8 libvkd3d-shader.la CC=/usr/bin/clang OBJC=/usr/bin/clang`
   (system bison 2.3 fails on hlsl.y).
-- Install prefix the runtime links: `~/Developer/vkd3d-install`.
+- Install prefix the runtime links: `<work>/vkd3d-install`.
   Copy `.libs/libvkd3d-shader.1.dylib` and `.libs/libvkd3d-shader.a` to its `lib/`, then
   `install_name_tool -id <prefix>/lib/libvkd3d-shader.1.dylib` and `codesign -f -s -`.
 - Check: `test_mul_dot` in tests/test_d3dx_shader.c (4 dp4, 0 add) fails with the unpatched library.

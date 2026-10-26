@@ -6,7 +6,7 @@ Steam folder, so the two paths are separate arguments) and
 `runtime/src/hp_boot_main.c` (fatal-signal report, then `hp_boot_run`;
 `argv[1]`/`argv[2]` override both paths). `HP_TRACE_IMPORTS=N` logs the first
 N import calls (`IMP n name(arg0..arg3) ret <guest ret> -> eax`). Build: `tools/boot/build_boot.sh [GEN]`
-into `~/Developer/hp-boot-build/lhp_boot`. Run:
+into `<work>/hp-boot-build/lhp_boot`. Run:
 `tools/boot/run_boot.sh <N> [VAR=value ...]` (owner run rules: 120 s alarm,
 KosmicKrisp ICD, `DXVK_WSI_DRIVER=SDL2`, `RECOMP_ASSUME_FOCUS=1`,
 `RECOMP_NO_ALERT_UI=1`, `DXVK_LOG_LEVEL=info`); logs in
@@ -58,7 +58,7 @@ Reached: `__security_init_cookie` (5 imports), then `__tmainCRTStartup`
   `push fs:[0]` and `mov fs:[0], eax`, `__SEH_epilog4` ends `mov esp, ebp;
   pop ebp; push ecx; ret` (disassembly 0xA74290..0xA742E8).
 - Owner: lifter, already planned as `docs/SEH_PLAN.md` slice 1; fix committed
-  in `~/Developer/MacRecomp-hp-seh` `c127626` (helpers passed
+  in `<work>/MacRecomp-hp-seh` `c127626` (helpers passed
   by `tools/pe/run_lift_pe.py --seh-prolog/--seh-epilog`).
 - Workaround for run 2: TEMPORARY splice of the SEH lane's partial lift
   (`tmp/seh_lift`, 185 functions) into a copy of the base lift
@@ -418,10 +418,10 @@ and `RECOMP: caller=...` and exits 3. One gap: for an indirect tail jump,
 `caller=0x000000FF`). Owner: engine diag. The guest site (0x96D7E4) had to
 be found from the table address instead.
 
-## Runs 10-11 (corrected lift ~/Developer/hp-lift-cfg/generated, ENGINE MacRecomp-hp-int 117fedc)
+## Runs 10-11 (corrected lift <work>/hp-lift-cfg/generated, ENGINE MacRecomp-hp-int 117fedc)
 
 Scratch engine and scratch lists dropped. Build:
-`ENGINE=~/Developer/MacRecomp-hp-int tools/boot/build_boot.sh ~/Developer/hp-lift-cfg/generated`.
+`ENGINE=<work>/MacRecomp-hp-int tools/boot/build_boot.sh <work>/hp-lift-cfg/generated`.
 `build_boot.sh` compiles any chunk over 4 MB at -O0 (lhp_0082, 0087, 0009).
 No chunk has the bts TSO=1 line on this engine.
 
@@ -554,7 +554,7 @@ The next ones are items 4-6 of that table: VirtualQuery in SEH dispatch
 
 ## Run 13 (requeued lift with 0x670040, ENGINE MacRecomp-hp-int)
 
-Build: `ENGINE=~/Developer/MacRecomp-hp-int tools/boot/build_boot.sh ~/Developer/hp-lift-cfg/generated`
+Build: `ENGINE=<work>/MacRecomp-hp-int tools/boot/build_boot.sh <work>/hp-lift-cfg/generated`
 (lift 04:52, 45,884 functions, 14 unresolved call stubs; analysis
 `0c4cd34`/`aeca602`/`cec6a5b`). Run:
 `tools/boot/run_boot.sh 13 HP_TRACE_IMPORTS=3000000`.

@@ -1,11 +1,11 @@
 # Win32 API coverage: golden trace vs our runtime
 
-Source: `~/Developer/hp-wine-oracle/trace/golden.jsonl` (the original exe under Wine, first 29.5 s, `notes/golden_trace.md`). Our status is read from the runtime export tables in the working tree on 2026-10-24 (HEAD 39160c0 plus an uncommitted `runtime/src/win32_core.c` edit from another lane that adds Fls*, EncodePointer, DecodePointer).
+Source: `<work>/hp-wine-oracle/trace/golden.jsonl` (the original exe under Wine, first 29.5 s, `notes/golden_trace.md`). Our status is read from the runtime export tables in the working tree on 2026-10-24 (HEAD 39160c0 plus an uncommitted `runtime/src/win32_core.c` edit from another lane that adds Fls*, EncodePointer, DecodePointer).
 
 Rerun (about 10 s):
 
 ```
-python -I tools/trace/api_coverage.py ~/Developer/hp-wine-oracle/trace/golden.jsonl --src runtime/src --imports notes/win32_imports.md
+python -I tools/trace/api_coverage.py <work>/hp-wine-oracle/trace/golden.jsonl --src runtime/src --imports notes/win32_imports.md
 ```
 
 ## Result
