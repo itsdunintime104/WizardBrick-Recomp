@@ -1,6 +1,6 @@
 # Leaf fuzz, recomp-check, x87 control word (2026-10-24)
 
-Engine: ~/Developer/MacRecomp-hp-fuzz, branch feat/pe-fuzz, commit 81399ca
+Engine: <work>/MacRecomp-hp-fuzz, branch feat/pe-fuzz, commit 81399ca
 (on feat/pe-integration 800aa75). Scratch: <job tmp>/leaf_fuzz/.
 Analysis: recon/analysis.json (51,670 functions). recon/switch_tables.json has 0 switch tables,
 so leaves with a jump table are not candidates.

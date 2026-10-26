@@ -1,7 +1,7 @@
 # Shader hitches at load start (1-3.4 s Present gaps)
 
-Status: diagnosis 2026-10-24; game-cache reset found and Mesa cache measured 2026-10-25. Source: DXVK v3.1.1-157-g04e66af0 (`~/Developer/hp-dxvk/dxvk`),
-KosmicKrisp 26.2.5 (`~/Developer/hp-mesa/src/mesa-26.2.5`).
+Status: diagnosis 2026-10-24; game-cache reset found and Mesa cache measured 2026-10-25. Source: DXVK v3.1.1-157-g04e66af0 (`<work>/hp-dxvk/dxvk`),
+KosmicKrisp 26.2.5 (`<work>/hp-mesa/src/mesa-26.2.5`).
 
 ## Symptom
 Reliability run val4 (480 s, `.app`): frames of 3443, 1553, 1485, 1076, 1622 and 1324 ms at
@@ -47,7 +47,7 @@ persistent, and was already warm for val4 (written since 06:06 that day).
 
 ## Measurement (2026-10-24, incomplete)
 Runs `shk_out/cold` and `shk_out/warm` (`$TMPDIR/shk_out`): `tools/check/reliability.sh --short
---skip-tests` on `~/Developer/hp-boot-build/lhp_boot` with `VK_DRIVER_FILES` = the
+--skip-tests` on `<work>/hp-boot-build/lhp_boot` with `VK_DRIVER_FILES` = the
 `hp-mesa-install2` ICD and `DXVK_CONFIG="d3d9.maxFrameLatency = 2"`; the warm run used a copy of
 the cold run's HOME (`--out` dir with `home/` already present, no new flag). Both ran 480 s,
 no "D3D9 window hidden".

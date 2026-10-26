@@ -6,7 +6,7 @@ Rebuild:
 
 ```
 _JAVA_OPTIONS=-Xmx10g /opt/homebrew/Cellar/ghidra/12.1.4/libexec/support/analyzeHeadless \
-  ~/Developer/ghidra_lhp lhp -process lhp_win32.exe -noanalysis -readOnly \
+  <work>/ghidra_lhp lhp -process lhp_win32.exe -noanalysis -readOnly \
   -scriptPath tools/ghidra -postScript ExportNameEvidence.java <tmp>/evidence.json
 python3 -I tools/pe/build_names.py <tmp>/evidence.json --saga <saga checkout>
 ```

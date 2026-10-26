@@ -161,7 +161,7 @@ cache holds them.
 
 ## Validation runs
 
-2026-10-24, `--short` (480 s), `~/Developer/hp-pkg-build/lhp_boot`, private HOME. Unit tests
+2026-10-24, `--short` (480 s), `<work>/hp-pkg-build/lhp_boot`, private HOME. Unit tests
 17 passed, 0 failed (two runs). The first two game launches exited at 1 s: the private HOME had
 no `Library/Application Support`, and `runtime/src/hp_boot.c:252-253` creates only the last
 folder. `reliability.py run` now creates it. Third run (job folder `relck/val3`):

@@ -1,9 +1,9 @@
 # Template reuse: fill screen and frame stutter (2026-10-24)
 
 Read-only research. Sources: HobbitRecomp (engine/runtime/src, README, git log),
-MarvelRecomp + shared engine `~/Developer/MacRecomp-hp-int`, HP's DXVK
-(`~/Developer/hp-dxvk/dxvk`, kisakcod fork, 04e66af0), Mesa 26.2.5 source
-(`~/Developer/hp-mesa/src/mesa-26.2.5`), MoltenVK `MVKImage.mm` (GitHub HEAD),
+MarvelRecomp + shared engine `<work>/MacRecomp-hp-int`, HP's DXVK
+(`<work>/hp-dxvk/dxvk`, kisakcod fork, 04e66af0), Mesa 26.2.5 source
+(`<work>/hp-mesa/src/mesa-26.2.5`), MoltenVK `MVKImage.mm` (GitHub HEAD),
 NFSU2 macOS port `daniiichan/Need-for-Speed-Underground-2-macOS`
 `src/host/main_macos.cpp`. [V] = read in code or doc. [I] = inferred.
 Owner rule applied: each item names the existing component to reuse and the

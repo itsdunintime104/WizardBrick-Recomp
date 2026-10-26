@@ -5,7 +5,7 @@ configuration or the Vulkan/Metal layer fix it without changing HP runtime sourc
 
 ## Runs
 
-Build `~/Developer/hp-o2-build/lhp_boot` (committed -O2), vsync on (HP forces
+Build `<work>/hp-o2-build/lhp_boot` (committed -O2), vsync on (HP forces
 D3DPRESENT_INTERVAL_ONE), FIFO, 3 swapchain images, 225 s, cutscene window 50-225 s.
 Script: job tmp `stall/run.sh NAME SECS [ENV=...]`; stats: `stall/tools/ph.py TRACE 50 225`
 (median, p90, p99, counts, Present-time histogram) and `tools/perf/ft_report.py`.
@@ -83,7 +83,7 @@ fl2 gives the same result as fl1 and keeps one frame of CPU/GPU overlap.
 Open:
 - Measure fl2 with the display build at its window size (2056x1290) against vsI (7 frames over 33 ms).
 - A/B the DXVK acquire-after-present (dxvk_presenter.cpp:316-324) behind an env switch.
-  Not done here: copying the DXVK tree to ~/Developer/hp-dxvk-stall was denied by permissions.
+  Not done here: copying the DXVK tree to <work>/hp-dxvk-stall was denied by permissions.
 
 ## Reproduce
 
@@ -108,12 +108,12 @@ Patch: `tools/package/patches/kosmickrisp-drawable-release.patch` adds
 
 Build (in place, apply the patch with `patch -p1` in the source root first):
 ```sh
-cd ~/Developer/hp-mesa   # src/mesa-26.2.5 from mesa-26.2.5.tar.xz
+cd <work>/hp-mesa   # src/mesa-26.2.5 from mesa-26.2.5.tar.xz
 python3 -m venv venv && venv/bin/pip install mako pyyaml packaging
 printf "[binaries]\nllvm-config = '/opt/homebrew/opt/llvm/bin/llvm-config'\n" > native.ini
 export PATH=$PWD/venv/bin:/opt/homebrew/opt/bison/bin:$PATH \
   PKG_CONFIG_PATH=/opt/homebrew/opt/spirv-llvm-translator/lib/pkgconfig:/opt/homebrew/opt/spirv-tools/lib/pkgconfig:/opt/homebrew/lib/pkgconfig
-meson setup build-kk src/mesa-26.2.5 --native-file native.ini --prefix=$HOME/Developer/hp-mesa-install \
+meson setup build-kk src/mesa-26.2.5 --native-file native.ini --prefix=<work>/hp-mesa-install \
   --buildtype=release -Db_ndebug=true \
   -Dcpp_args="-isystem /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1" \
   -Dvulkan-drivers=kosmickrisp -Dgallium-drivers= -Dllvm=enabled -Dopengl=false -Dgles1=disabled \
@@ -124,7 +124,7 @@ ninja -C build-kk && ninja -C build-kk install
 The `-isystem` flag is needed because the Command Line Tools clang++ here does not find
 `<cstdint>` (its toolchain libc++ dir lacks it); without it the SPIRV-Tools check in
 src/compiler/clc/meson.build:98 fails. The library links only zstd and SPIRV-Tools (no X11).
-App: `make_app.sh` takes `KK_PREFIX=$HOME/Developer/hp-mesa-install`.
+App: `make_app.sh` takes `KK_PREFIX=<work>/hp-mesa-install`.
 
 Runs at 2056x1290 (hp-pkg-build/lhp_boot, 4533590, -O2), job tmp `kk/`:
 
@@ -149,7 +149,7 @@ the cutscene. Only fd1 (load average 40, other jobs on the machine) had more tha
 Leak, live CAMetalDrawable from `heap`: unpatched (fd1) 4,074 at 40 s and 8,354 at 85 s;
 patched (fix) 1 at 40 s and 1 at 85 s. The patch removes the leak.
 
-Test app (`make_app.sh` with `KK_PREFIX`, ~/Developer/hp-app-build): `codesign --verify
+Test app (`make_app.sh` with `KK_PREFIX`, <work>/hp-app-build): `codesign --verify
 --deep --strict` passes; no /opt/homebrew or /Users in any load command or rpath of the 10
 Mach-Os (llvm-objdump). A 60 s launch with a private HOME loaded "KosmicKrisp 26.2.5" from
 the bundle at 2056x1290 FIFO. The screenshot is not valid: another lane's Hobbit run started
@@ -171,7 +171,7 @@ arrays; `[MTL4RenderPassDescriptor new]` + release left 0. The other `[[X new] i
 (MTL4ArgumentTableDescriptor, MTLStencilDescriptor, MTLDepthStencilDescriptor,
 MTL4CommitOptions) leave nothing, so they are not changed.
 Patch: `tools/package/patches/kosmickrisp-renderpass-release.patch` (apply with `patch -p1`
-after the drawable patch). Test build: build dir `build-kk2`, prefix `~/Developer/hp-mesa-install2`.
+after the drawable patch). Test build: build dir `build-kk2`, prefix `<work>/hp-mesa-install2`.
 
 | Run | Driver | Color arrays early -> late | CAMetalDrawable early -> late | Footprint |
 |---|---|---|---|---|
