@@ -50,14 +50,14 @@ copy of the Steam install (app 21130).
 
 1. **M0 front end and measurement.** A PE analyzer writes the same
    `analysis.json` the Mach-O analyzer writes, so the sweeper, the switch-table
-   finder and the lifter work unchanged. Done: `tools/pe/analyze_pe.py`.
+   finder and the lifter work unchanged. Done: `engine/windows/tools/pe/analyze_pe.py`.
    Function boundaries come from Ghidra, because a stripped PE has no
    function-starts table. Measure: functions lifted, functions failed,
    untranslated instructions, unset-flag reads.
 2. **M1 link.** Every lifted function compiles and links for arm64 with stub
    imports. This is the gate the two shipping games passed before anything ran.
 3. **M2 run-time loader.** Map the PE at 0x400000, zero-fill the `.data` tail,
-   bind the IAT to host thunks. Done: `runtime/src/pe_load.c`.
+   bind the IAT to host thunks. Done: `engine/windows/runtime/src/pe_load.c`.
 4. **M3 Win32 thunks.** Work through the 231 imports by bucket: file system and
    paths, threads and synchronisation, memory, the CRT's environment and
    locale, the window and message loop (SDL2), the registry entries the game
@@ -94,7 +94,7 @@ Shader Model 1-3 byte code, and constant-table reflection. Nothing more.
 ### Decision (2026-10-24): DXVK Native on KosmicKrisp
 
 Proven on this Mac (`notes/dxvk_triangle.md`): upstream
-DXVK (`02e2028c`) plus four published macOS patches (`tools/dxvk_test/patches`),
+DXVK (`02e2028c`) plus four published macOS patches (`engine/windows/tools/dxvk_test/patches`),
 built D3D9-only, on KosmicKrisp from Homebrew Mesa 26.2.5. Clear, a
 vertex-coloured triangle and a textured quad read back bit-exact; 300 presents
 at a median of 8.2 ms.
@@ -110,7 +110,7 @@ cache (`notes/shader_cache.md`), so the compiler runs at run time.
 The D3D9-to-OpenGL fallback with Cg is no longer needed.
 
 DXVK uses its SDL2 window backend, the same SDL as the engine and the UI
-slice (`runtime/src/d3d9_backend.c`; the first triangle test used SDL3).
+slice (`engine/windows/runtime/src/d3d9_backend.c`; the first triangle test used SDL3).
 
 ## Rules carried over
 

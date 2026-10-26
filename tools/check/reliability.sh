@@ -4,13 +4,13 @@
 #        tools/check/reliability.sh [--skip-tests] [--out DIR] --baseline APP_A --candidate APP_B [SECONDS]
 #   BUILD    a game binary (build.nosync/lhp; needs HPRECOMP_GAME_DIR) or "Harry Potter Recompiled.app"
 #   SECONDS  run length (default 1200, the run-24 soak; compare 600); --short = 600
-# Waits while another game runs or the screen is locked, runs tests/run_all.sh, then
+# Waits while another game runs or the screen is locked, runs the runtime and HP tests (make -C build test), then
 # tools/check/reliability.py run (compare: A, then B, each after an unjudged warm-up run, same
 # input and empty private HOME, then reliability.py compare). Exit 0 only when all pass (1 on a failed check or a worse
 # candidate, 2 on a usage error).
 set -u
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
-PY=$ROOT/.venv/bin/python   # as tests/run_all.sh
+PY=$ROOT/.venv/bin/python   # as engine/windows/tests/run_all.sh
 SECS=1200; TESTS=1; BOOT=(); OUT=; BASE=; CAND=
 while [ $# -gt 0 ]; do
     case $1 in
@@ -53,7 +53,7 @@ wait_free
 
 RC=()
 if [ $TESTS = 1 ]; then
-    "$ROOT/tests/run_all.sh" --out "$OUT/tests" > "$OUT/tests.log" 2>&1
+    "$ROOT/engine/windows/tests/run_all.sh" --tests "$ROOT/tests/game_tests.sh" --out "$OUT/tests" > "$OUT/tests.log" 2>&1
     RC=(--tests-rc $?)
     tail -n 3 "$OUT/tests.log"
 fi

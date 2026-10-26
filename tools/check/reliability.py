@@ -434,8 +434,8 @@ def judge(out: Path, seconds: int, tests_rc: int | None, boot_limit: int
         res.append((r, limit, src))
 
     if tests_rc is not None:
-        add(CheckResult("unit tests", tests_rc == 0, f"tests/run_all.sh exit {tests_rc}"), "exit 0",
-            "HP tests/run_all.sh")
+        add(CheckResult("unit tests", tests_rc == 0, f"run_all.sh exit {tests_rc}"), "exit 0",
+            "engine windows/tests/run_all.sh with tests/game_tests.sh")
     alive = boot_check.judge(log, meta["exited_early"], seconds, exit_code=meta["exit_code"])
     named = {r.name: r for r in alive}
     add(named["alive"], f"running at {seconds} s", "engine boot_check.py:100-103")

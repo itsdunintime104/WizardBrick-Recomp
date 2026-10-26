@@ -1,11 +1,11 @@
 /* Uber-shader sweep harness: compiles generated HLSL files through the
- * guest-facing thunk_D3DXCompileShader (runtime/src/d3dx_shader.c), the
+ * guest-facing thunk_D3DXCompileShader (engine/windows/runtime/src/d3dx_shader.c), the
  * same path the game takes. Job file lines (tab-separated):
  *   source-file  entry  profile  flags-hex  output-file
  * Output, one line per job: "<n> OK <bytes> <usec> <hit>" or
  * "<n> FAIL <usec>" followed by the error buffer lines prefixed "| ".
  * Driver: tools/shaders/sweep.py. The guest scaffolding is a copy of
- * tests/test_d3dx_shader.c. */
+ * engine/windows/tests/test_d3dx_shader.c. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

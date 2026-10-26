@@ -7,7 +7,7 @@ Usage:
 GOLDEN.jsonl: output of tools/trace/filter_relay.py.
 OURS.log: stderr of tools/boot/run_boot.sh N HP_TRACE_IMPORTS=N. Two line
 formats are accepted:
-    IMP n Func(a0 a1 a2 a3) ret RET -> EAX                (hp_boot.c today)
+    IMP n Func(a0 a1 a2 a3) ret RET -> EAX                (pe_boot.c today)
     IMP n t=TID DLL!Func(a0 a1 ...) ret RET -> EAX        (spec, golden_trace.md)
     THR TID NAME                                          (spec: thread name)
 

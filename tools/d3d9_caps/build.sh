@@ -1,6 +1,6 @@
 #!/bin/sh
 # Build and run probe.c on DXVK Native + KosmicKrisp (notes/dxvk_triangle.md).
-# Both come from HPRECOMP_DEPS_DIR (default build.nosync/deps), as in tests/run_all.sh.
+# Both come from HPRECOMP_DEPS_DIR (default build.nosync/deps), as in engine/windows/tests/run_all.sh.
 set -e
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 DEPS=${HPRECOMP_DEPS_DIR:-$ROOT/build.nosync/deps}

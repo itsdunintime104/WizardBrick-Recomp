@@ -1,7 +1,7 @@
 """Win32 API coverage: which calls in the Wine golden trace our runtime handles.
 
 Usage:
-    python -I tools/trace/api_coverage.py GOLDEN.jsonl [--src runtime/src]
+    python -I tools/trace/api_coverage.py GOLDEN.jsonl [--src engine/windows/runtime/src]
         [--imports notes/win32_imports.md]
 
 GOLDEN.jsonl: output of tools/trace/filter_relay.py (notes/golden_trace.md).
@@ -199,7 +199,7 @@ class Row:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
     ap.add_argument("golden")
-    ap.add_argument("--src", default="runtime/src")
+    ap.add_argument("--src", default="engine/windows/runtime/src")
     ap.add_argument("--imports", default="notes/win32_imports.md")
     a = ap.parse_args()
     rt = load_runtime(a.src, a.imports)

@@ -3,7 +3,7 @@
 The game uses **XAudio2 2.4** (DirectX SDK August 2008), created through
 `ole32!CoCreateInstance`, plus the built-in **AudioReverb 2.4** effect and
 X3DAudio 1.6. It does not use XACT, DirectSound or its own XAPOs. X3DAudio is
-done (`runtime/src/win32_audio.c`, test `tests/test_win32_audio.c`). This file
+done (`engine/windows/runtime/src/win32_audio.c`, test `engine/windows/tests/test_win32_audio.c`). This file
 is the plan for the XAudio2 COM layer.
 
 All addresses are guest VAs in `orig.nosync/lhp_win32.exe`. Scripts that
@@ -251,7 +251,7 @@ FAudio 26.10 (Homebrew) runs its mixer on SDL3's audio thread
 that thread, and that thread must run guest code:
 
 1. In every host callback shim, call `w32_host_thread_attach()`
-   (`runtime/include/win32_thunk.h`, sync slice) before the first guest call.
+   (`engine/windows/runtime/include/win32_thunk.h`, sync slice) before the first guest call.
    It gives the thread a guest stack (`guest_thread_attach`) and a TIB; lifted
    MSVC code reads `fs:[0]` in its SEH prologs, so a bare
    `guest_thread_attach` is not enough. It is safe to call every time.
@@ -313,8 +313,8 @@ OnBufferEnd, OnLoopEnd, OnVoiceError and GetState.
 
 ## 8. Slices
 
-All in the audio slice: new `runtime/src/win32_xaudio2.c` (one file; slices
-run one after another) and `tests/test_win32_xaudio2.c`. The test links
+All in the audio slice: new `engine/windows/runtime/src/win32_xaudio2.c` (one file; slices
+run one after another) and `engine/windows/tests/test_win32_xaudio2.c`. The test links
 `win32_xaudio2.c`, `guest_mem.c`, `host_funcs.c`, `guest_call.c`,
 `recomp_glue.c` and `-lFAudio`, with doubles for `com_guest_*`,
 `com_register_class` and `w32_host_thread_attach` in the test file (no

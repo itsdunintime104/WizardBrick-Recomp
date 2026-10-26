@@ -53,7 +53,7 @@ matter that a stdcall callee pops its own arguments. No new variant is needed.
 
 ## Shared code
 
-`runtime/include/win32_thunk.h` is the contract: argument and return macros,
+`engine/windows/runtime/include/win32_thunk.h` is the contract: argument and return macros,
 the per-slice export tables, the import resolver, the per-thread last error,
 the Win32 handle table and the TIB hook. Win32 handles do not use the engine's
 `handles.h`, whose kinds are fixed and whose `CloseHandle`-free design does not
