@@ -57,6 +57,10 @@ The game has no Mac version, so Steam for Mac does not download it. Use one of t
 2. **A Windows PC**: install the game with Steam and copy the `LEGO Harry Potter` folder to your Mac.
 3. **Steam inside Wine, CrossOver or Whisky**: `setup.sh` finds the game there by itself.
 
+**No DRM removal is needed.** The Steam exe has no Steam DRM wrapper (SteamStub): it has no `.bind` section and does not load `steam_api.dll`. Use it as it is; Steamless is not needed and finds nothing to remove. Do not patch the exe with any other tool either. `setup.sh` checks its sha256 and stops if the file was changed.
+
+**GOG version.** [GOG sells the game](https://www.gog.com/en/game/lego_harry_potter_years_14) DRM-free. It is not tested with this project. `setup.sh` accepts it only if its `LEGOHarryPotter.exe` has the same sha256 as the Steam build 660 (`21c2d30c07e3ac68…`); otherwise it stops with a mismatch message. If you try it, please open an issue with the sha256 that `setup.sh` prints.
+
 ## Install
 
 1. Install the Xcode Command Line Tools, and wait until the installer says it is done:
@@ -175,7 +179,7 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 | Problem | Fix |
 |---|---|
 | "game folder not found" | Set `HPRECOMP_GAME_DIR` to the folder that holds `LEGOHarryPotter.exe` |
-| `setup.sh` says the sha256 does not match | Only build 660 works. Run SteamCMD's `app_update 21130 validate` again |
+| `setup.sh` says the sha256 does not match | Only the unchanged Steam build 660 exe works. If a tool (Steamless, a patcher) changed it, restore the original: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. A GOG copy with another sha256 is not supported yet |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
 | Short stutter during play | Shaders compiling for the first time. It fades as you revisit areas. If it happens everywhere, the cache was cleared: run `./setup.sh` again. See [Shader warm-up and stutter](#shader-warm-up-and-stutter) |
 
