@@ -18,3 +18,5 @@
 # group A): 0x718B74 is inside sub_00718B60, 0x7355C3 inside sub_007355B0.
 0x718B74
 0x7355C3
+# A Ghidra false start one byte into the ILT thunk `E9 55 93 03 00` at 0x404066.
+0x404067
