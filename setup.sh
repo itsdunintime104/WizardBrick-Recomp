@@ -1,14 +1,14 @@
 #!/bin/sh
 # One-command setup: checks the machine, finds your own Windows copy of
 # LEGO Harry Potter: Years 1-4, translates it, builds the native program and
-# installs "Wizard Bricks Recompiled.app".
+# installs "LEGO Harry Potter Years 1-4.app".
 # Usage: ./setup.sh [--check] [--force] [--no-install] [--no-warm] [--dry-run] [--help]
 set -eu
 
 ROOT=$(cd "$(dirname "$0")" && pwd)
 cd "$ROOT"
 
-APP_NAME="Wizard Bricks Recompiled"
+APP_NAME="LEGO Harry Potter Years 1-4"
 # The launcher script inside the app (tools/package/make_app.sh, APP_EXE).
 LAUNCHER=HarryPotterRecompiled
 GAME_EXE=LEGOHarryPotter.exe

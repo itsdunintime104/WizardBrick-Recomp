@@ -1,5 +1,5 @@
 #!/bin/sh
-# Build "Wizard Bricks Recompiled.app" from the native game binary: a launcher, the
+# Build "LEGO Harry Potter Years 1-4.app" from the native game binary: a launcher, the
 # binary, and every non-system library it loads, with install names rewritten to
 # @rpath so the app needs neither Homebrew nor DYLD_* variables at run time.
 # Usage: make_app.sh <game binary> <output .app>

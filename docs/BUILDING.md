@@ -18,7 +18,7 @@
 2. `engine/` is the MacRecomp engine, a git submodule. Its lifter (`engine/tools/xrecomp/`) translates every x86 function into C. `tools/pe/run_lift_pe.py` runs it on the PE image with `recon/analysis.json`. The output goes to `generated.nosync/`: 45,882 functions in 92 files, none left as stubs. It is never committed.
 3. `runtime/` replaces what Windows gives the game: the loader and the 231 imports from 14 DLLs. See [The Win32 layer](#the-win32-layer).
 4. `build/Makefile` compiles the lifted C, the engine's generic runtime (guest memory, guest calls, heap, diagnostics, overlay text) and `runtime/` into `build.nosync/lhp`.
-5. `make -C build app` packages it as `build.nosync/Wizard Bricks Recompiled.app` with every non-system library inside it (`tools/package/make_app.sh`). The app icon is taken from your copy of the game exe at build time.
+5. `make -C build app` packages it as `build.nosync/LEGO Harry Potter Years 1-4.app` with every non-system library inside it (`tools/package/make_app.sh`). The app icon is taken from your copy of the game exe at build time.
 
 At run time `lhp` maps the original exe into guest memory, binds its imports to the runtime, and runs the lifted entry point. It reads the game's data files from the Steam folder and never writes there.
 
@@ -74,7 +74,7 @@ tools/deps/build_kosmickrisp.sh
     --analysis recon/analysis.json --switch recon/switch_tables.json \
     --bin orig.nosync/lhp_win32.exe --out generated.nosync --prefix lhp --jobs 8
 make -C build -j8                                      # build.nosync/lhp
-make -C build app HP_GAME_DIR="<game folder>"          # build.nosync/Wizard Bricks Recompiled.app
+make -C build app HP_GAME_DIR="<game folder>"          # build.nosync/LEGO Harry Potter Years 1-4.app
 ```
 
 `make` tracks headers, `OPT`, `TSO`, `ENGINE` and `GEN`, but not other flags. After you change another flag, delete `build.nosync/obj/` before you build again. `make -C build OPT=1` compiles faster and runs slower.
