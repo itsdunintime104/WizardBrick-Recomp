@@ -38,10 +38,8 @@ if [ ! -f "$WORK/.patched" ]; then
     touch "$WORK/.patched"
 fi
 
-# The Command Line Tools ship an almost empty usr/include/c++/v1 that hides
-# the SDK libc++ headers; point the compiler at the SDK copy.
 if [ ! -f "$BUILD/build.ninja" ]; then
-    CXXFLAGS="-nostdinc++ -isystem $SDK/usr/include/c++/v1" \
+    CXXFLAGS="$CXXFIX" \
     meson setup "$BUILD" "$SRC" --buildtype=release --prefix="$PREFIX" \
         -Denable_dxgi=false -Denable_d3d8=false -Denable_d3d10=false -Denable_d3d11=false \
         -Denable_d3d9=true -Dnative_sdl2=enabled -Dnative_sdl3=disabled -Dnative_glfw=disabled \

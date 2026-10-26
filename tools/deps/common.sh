@@ -1,5 +1,5 @@
 # Shared setup for tools/deps/build_*.sh. Source it; do not run it.
-# Sets: DEPS_ROOT (repo root), BREW, JOBS, SDK, and a clean arm64 PATH.
+# Sets: DEPS_ROOT (repo root), BREW, JOBS, SDK, CXXFIX, and a clean arm64 PATH.
 set -euo pipefail
 
 DEPS_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
@@ -11,6 +11,13 @@ JOBS=${JOBS:-$(sysctl -n hw.ncpu)}
 # otool or perl, or a /usr/local gcc) makes xcrun and configure fail.
 export PATH="$BREW/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 SDK=$(xcrun --show-sdk-path)
+# Command Line Tools 27.0 shipped an almost empty usr/include/c++/v1 that
+# hides the SDK libc++ headers (notes/dxvk_triangle.md). Point the compiler at
+# the SDK copy only then: on a working toolchain meson drops the -isystem as a
+# default include path but keeps -nostdinc++, and nothing then finds <array>.
+CXXFIX=
+echo '#include <array>' | c++ -x c++ -std=c++17 -fsyntax-only - 2>/dev/null ||
+    CXXFIX="-nostdinc++ -isystem $SDK/usr/include/c++/v1"
 
 die() { echo "error: $*" >&2; exit 1; }
 
