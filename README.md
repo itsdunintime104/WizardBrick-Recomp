@@ -76,15 +76,16 @@ The game has no Mac version, so Steam for Mac does not download it. Use one of t
    ```sh
    git clone --recurse-submodules https://github.com/itsdunintime104/WizardBrick-Recomp.git
    cd WizardBrick-Recomp
-   HPRECOMP_GAME_DIR="$HOME/Games/LEGO Harry Potter" ./setup.sh
+   ./setup.sh "$HOME/Games/LEGO Harry Potter"
    ```
+   Setup also finds the game by itself in Steam under Wine, CrossOver or Whisky, Steam libraries on other drives, GOG installs and external drives, and asks for the folder if it finds none (you can drag the folder into Terminal).
 4. Open **LEGO Harry Potter Years 1-4** from `~/Applications`.
 
 `setup.sh` checks your Mac, builds DXVK, vkd3d-shader and KosmicKrisp at pinned versions with this repo's patches (about 4 minutes, once), copies the game's exe, checks its sha256, translates it, builds the app and installs it. It never writes to the game folder. `./setup.sh --check` runs only the checks.
 
 At the end, setup warms the game's shader cache: the game window opens for about 6 minutes and loads every level by itself. Leave it open; it closes by itself. This cuts most of the stutter, not all of it: see [Shader warm-up and stutter](#shader-warm-up-and-stutter). `--no-warm` skips this step.
 
-Keep the cloned folder: the app loads the game's code from `orig.nosync/` in it. The app remembers the game folder you gave in `HPRECOMP_GAME_DIR`.
+Keep the cloned folder: the app loads the game's code from `orig.nosync/` in it. The app remembers the folder setup used.
 
 | Option | Effect |
 |---|---|
@@ -178,7 +179,7 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 
 | Problem | Fix |
 |---|---|
-| "game folder not found" | Set `HPRECOMP_GAME_DIR` to the folder that holds `LEGOHarryPotter.exe` |
+| "game folder not found" | Run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks |
 | `setup.sh` says the sha256 does not match | Only the unchanged Steam build 660 exe works. If a tool (Steamless, a patcher) changed it, restore the original: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. A GOG copy with another sha256 is not supported yet |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
 | Short stutter during play | Shaders compiling for the first time. It fades as you revisit areas. If it happens everywhere, the cache was cleared: run `./setup.sh` again. See [Shader warm-up and stutter](#shader-warm-up-and-stutter) |
