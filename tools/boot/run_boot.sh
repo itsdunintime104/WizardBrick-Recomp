@@ -4,7 +4,7 @@
 # (env and perl exec, so it is the lhp process). Usage: run_boot.sh N [extra env...]
 # The game is BIN (default build.nosync/lhp) with orig.nosync/lhp_win32.exe and
 # $HPRECOMP_GAME_DIR (required: the LEGO Harry Potter folder); KosmicKrisp comes from
-# HPRECOMP_DEPS_DIR (default build.nosync/deps), as in tests/run_all.sh.
+# HPRECOMP_DEPS_DIR (default build.nosync/deps), as in engine/windows/tests/run_all.sh.
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 BIN=${BIN:-$ROOT/build.nosync/lhp}
 DEPS=${HPRECOMP_DEPS_DIR:-$ROOT/build.nosync/deps}

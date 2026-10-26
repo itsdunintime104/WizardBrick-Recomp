@@ -1,7 +1,7 @@
-/* Game patches keyed by guest call site. Contract: runtime/include/hp_patches.h. */
+/* Game patches keyed by guest call site. Contract: engine windows/runtime/include/game_hooks.h. */
 #include <stddef.h>
 
-#include "hp_patches.h"
+#include "game_hooks.h"
 
 struct hp_sleep_clamp {
     uint32_t guest_ret;
@@ -18,7 +18,7 @@ static const struct hp_sleep_clamp g_sleep_clamps[] = {
     {0x00966F3Cu, 2u},
 };
 
-uint32_t hp_patch_sleep_ms(uint32_t guest_ret, uint32_t ms)
+uint32_t game_patch_sleep_ms(uint32_t guest_ret, uint32_t ms)
 {
     for (size_t i = 0; i < sizeof g_sleep_clamps / sizeof g_sleep_clamps[0]; i++) {
         const struct hp_sleep_clamp *c = &g_sleep_clamps[i];

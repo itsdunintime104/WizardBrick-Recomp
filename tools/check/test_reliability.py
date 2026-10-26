@@ -1,4 +1,4 @@
-"""Unit tests for tools/check/reliability.py: pytest tools/check (repo .venv, as tests/run_all.sh)."""
+"""Unit tests for tools/check/reliability.py: pytest tools/check (repo .venv, as engine/windows/tests/run_all.sh)."""
 import json
 import sys
 from pathlib import Path
