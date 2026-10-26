@@ -186,7 +186,7 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 
 ## Building and development
 
-[docs/BUILDING.md](docs/BUILDING.md) covers how the translation works, the Win32 layer, the dependency scripts in `tools/deps/`, building by hand, tests and the repository layout. The [MacRecomp README](https://github.com/itsdunintime104/MacRecomp#readme) covers the translator.
+[docs/BUILDING.md](docs/BUILDING.md) covers how the translation works, the Win32 layer, the dependency scripts in `engine/windows/tools/deps/`, building by hand, tests and the repository layout. The [MacRecomp README](https://github.com/itsdunintime104/MacRecomp#readme) covers the translator.
 
 ## Credits
 
@@ -212,6 +212,6 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 
 ## License
 
-GPL-3.0. See [LICENSE](LICENSE). Third-party code keeps its own license: see `engine/tools/xrecomp/LICENSE`, `engine/tools/xrecomp/NOTICE` and the header of `engine/runtime/src/dlmalloc.c`. The patches in `tools/` keep the license of the project they patch.
+GPL-3.0. See [LICENSE](LICENSE). Third-party code keeps its own license: see `engine/tools/xrecomp/LICENSE`, `engine/tools/xrecomp/NOTICE` and the header of `engine/runtime/src/dlmalloc.c`. The patches in `engine/windows/tools/` keep the license of the project they patch.
 
 The repository contains no game assets, no game binary and no code generated from the game. `recon/` holds function addresses, import names and switch tables taken from the game binary, which the translator needs. The app icon is made from your own copy of the game when you build.

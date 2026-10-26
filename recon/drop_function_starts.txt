@@ -2,7 +2,7 @@
 #
 # Each lies inside the contiguous body of a function that Ghidra found by
 # recursive descent before the coverage passes ran, so it is an internal jump
-# target, not a function entry (tools/ghidra/FindPrologues.java's "evidence"
+# target, not a function entry (engine/windows/tools/ghidra/FindPrologues.java's "evidence"
 # tier takes every call or pointer target). Splitting a function there would
 # turn its internal jumps into tail calls and lose the flags they carry.
 # 0xA6914E (36 bytes) and 0xA6B22D (453 bytes) are hand-written CRT routines;

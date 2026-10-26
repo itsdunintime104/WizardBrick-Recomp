@@ -62,7 +62,7 @@ The two game frames:
 
 - **0x929E30 `SetThreadName`**, scope table 0xDFBCF8, one record: filter
   0x929E85, handler 0x929E9D. The filter returns CONTINUE_EXECUTION for
-  0x406D1388. `runtime/src/win32_core.c:344` already returns normally for that
+  0x406D1388. `engine/windows/runtime/src/win32_core.c:344` already returns normally for that
   code; this is equivalent.
 - **0x93CB90 `DetectCpuFeatures`**, scope table 0xDFBD08, one record: filter
   0x93CEB6 (`mov eax,1; ret` = EXECUTE_HANDLER), handler 0x93CEBC (sets
@@ -109,7 +109,7 @@ already emits. The handler thunks run only during dispatch. They need nothing.
   `__global_unwind2` and `_EH4_GlobalUnwind`, dispatch only).
 - Today any code other than 0x406D1388 prints `UNSUPPORTED
   KERNEL32.dll!RaiseException ... (code, guest return)` and aborts
-  (`runtime/src/win32_core.c:360-364`); `RtlUnwind` does the same
+  (`engine/windows/runtime/src/win32_core.c:360-364`); `RtlUnwind` does the same
   (`win32_core.c:368-376`).
 
 ## 5. What the engine does for the Mach-O games
@@ -177,13 +177,13 @@ Under (a), the 9 hand-written dispatch routines and the stubs:
 ## Slices
 
 Slices 1 and 2 edit the lifter or the function list; run them one after the
-other. Slices 3 and 4 edit `runtime/src/win32_core.c`; one worker.
+other. Slices 3 and 4 edit `engine/windows/runtime/src/win32_core.c`; one worker.
 
 1. **Frame helpers bridge `ebp`** (lifter + HP lift config).
    - Engine `tools/xrecomp/lifter.py` (HP checkout): `seh_epilog` accepts a set,
      like `seh_prolog` (`SEH_HELPERS = SEH_PROLOGS | SEH_EPILOGS`, built with
      `_as_addr_set`); `SEH_EPILOG` users keep working with the minimum.
-   - `tools/xrecomp/run.py:61` or `tools/pe/run_lift_pe.py`: pass
+   - `tools/xrecomp/run.py:61` or `engine/windows/tools/pe/run_lift_pe.py`: pass
      `seh_prolog={0xA74290, 0xA6EE6B, 0xA6EE9E, 0xA6EED4, 0xA6EF0A}` and
      `seh_epilog={0xA742D5, 0xA6EF43, 0xA6EF57}` to `BatchTranslator`
      (`translator.py:3125` already takes both).
@@ -197,20 +197,20 @@ other. Slices 3 and 4 edit `runtime/src/win32_core.c`; one worker.
    `RECOMP_ITAIL` or unresolved stub targets any of the 35 C-group addresses in
    `notes/lift_review.md` (33 + 0xA72C27, 0xA80B0C).
 3. **`RaiseException` and `RtlUnwind` name the exception, then abort**
-   (`runtime/src/win32_core.c:344-376`). For 0xE06D7363 with nargs >= 3 and
+   (`engine/windows/runtime/src/win32_core.c:344-376`). For 0xE06D7363 with nargs >= 3 and
    args[0] in 0x19930520..0x19930522: args[2] is the ThrowInfo; 0 means
    rethrow; else type name = TypeDescriptor(+8) of the first CatchableType
    (ThrowInfo+12 -> array+4 -> CatchableType+4). Print code, type name, guest
    return address, and the first 8 `fs:[0]` records (next, handler). Other
    codes: print code, flags, nargs, args. Keep 0x406D1388 unchanged.
-   Check: new cases in `tests/test_win32_core.c` (use `tests/quiet_abort.h`):
+   Check: new cases in `engine/windows/tests/test_win32_core.c` (use `engine/windows/tests/quiet_abort.h`):
    a synthetic ThrowInfo for `.?AVbad_alloc@std@@` aborts with that name in
    stderr; a rethrow (ThrowInfo 0) aborts with "rethrow"; 0x406D1388 still
    returns and pops 16 bytes.
 4. **Unhandled filters** (same file). `SetUnhandledExceptionFilter` stores the
    pointer and returns the previous one; `UnhandledExceptionFilter` prints the
    record's code and returns 1. Skip if a slice already implements them.
-   Check: in `tests/test_win32_core.c`, set 0xA769C8 then 0 returns 0, then
+   Check: in `engine/windows/tests/test_win32_core.c`, set 0xA769C8 then 0 returns 0, then
    0xA769C8; the filter returns 1 for a record with code 0xC0000409.
 5. **Proof that no throw happens in play.** Boot run to the menu and into a
    level. Check: the log has 0 `RaiseException` or `RtlUnwind` abort lines and
@@ -231,9 +231,9 @@ other. Slices 3 and 4 edit `runtime/src/win32_core.c`; one worker.
 - Slice 3 done in the core slice: `RaiseException` (except the thread-name
   code 0x406D1388) and `RtlUnwind` print the code, the C++ type name for
   0xE06D7363, and the guest `fs:[0]` chain, then abort
-  (`runtime/src/win32_core.c:364-486`, `tests/test_win32_core.c:329-445`).
+  (`engine/windows/runtime/src/win32_core.c:364-486`, `engine/windows/tests/test_win32_core.c:329-445`).
 - Slice 4 dropped. `SetUnhandledExceptionFilter` already stores the filter
-  and returns the old one (`runtime/src/win32_mem.c:1768-1771`).
+  and returns the old one (`engine/windows/runtime/src/win32_mem.c:1768-1771`).
   `UnhandledExceptionFilter` keeps printing the exception code and address
   and aborting (`win32_mem.c:1774-1783`). Returning 1 would only let the CRT
   reach `TerminateProcess` with less information; under option (a) the
