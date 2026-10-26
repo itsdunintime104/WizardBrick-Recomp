@@ -73,10 +73,10 @@ TEST_ARGS ?=
 test:
 	HPRECOMP_DEPS_DIR="$(DEPS)" $(ROOT)/tests/run_all.sh --engine $(ENGINE) $(TEST_ARGS)
 
-# Double-clickable bundle "build.nosync/Wizard Bricks Recompiled.app" with every
+# Double-clickable bundle "build.nosync/LEGO Harry Potter Years 1-4.app" with every
 # non-system library inside it (tools/package/make_app.sh). The launcher uses
 # HP_GAME_DIR (the game folder) and HP_EXE (the game image) by default.
-APP_NAME := Wizard Bricks Recompiled
+APP_NAME := LEGO Harry Potter Years 1-4
 HP_GAME_DIR ?=
 HP_EXE ?= $(ROOT)/orig.nosync/lhp_win32.exe
 

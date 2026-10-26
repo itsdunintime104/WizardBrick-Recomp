@@ -1,4 +1,4 @@
-# Packaging: Wizard Bricks Recompiled.app
+# Packaging: LEGO Harry Potter Years 1-4.app
 
 The app was called "Harry Potter Recompiled" until 2026-10-25. The bundle id
 (`local.harrypotterrecomp`), the launcher name and the save and log folders kept
@@ -17,7 +17,7 @@ make -C build -j8 app HP_GAME_DIR="<game folder>"
 prefixes to `tools/package/make_app.sh`: `DXVK_PREFIX`, `VKD3D_PREFIX` and
 `KK_PREFIX` (default `build.nosync/deps/{dxvk,vkd3d,kosmickrisp}`, built by
 tools/deps), `BREW_PREFIX`, `HP_GAME_DIR` and `HP_EXE` (default
-`orig.nosync/lhp_win32.exe`). Output: `build.nosync/Wizard Bricks Recompiled.app`.
+`orig.nosync/lhp_win32.exe`). Output: `build.nosync/LEGO Harry Potter Years 1-4.app`.
 
 The 2026-10-24 app (built by hand from the boot build) was 91 MB: the launcher,
 the game binary `lhp`, and 18 libraries in
@@ -44,7 +44,7 @@ xattr com.apple.FinderInfo". A copy in `build.nosync` passes a non-strict
 ## Launch
 
 Double-click the app, or run
-`"build.nosync/Wizard Bricks Recompiled.app/Contents/MacOS/HarryPotterRecompiled"`.
+`"build.nosync/LEGO Harry Potter Years 1-4.app/Contents/MacOS/HarryPotterRecompiled"`.
 
 - Overrides: `HPRECOMP_GAME_DIR` (folder with `LEGOHarryPotter.exe`) and
   `HPRECOMP_EXE` (the game image).

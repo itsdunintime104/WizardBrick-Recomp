@@ -69,7 +69,7 @@ The game has no Mac version, so Steam for Mac does not download it. Use one of t
    cd WizardBrick-Recomp
    HPRECOMP_GAME_DIR="$HOME/Games/LEGO Harry Potter" ./setup.sh
    ```
-4. Open **Wizard Bricks Recompiled** from `~/Applications`.
+4. Open **LEGO Harry Potter Years 1-4** from `~/Applications`.
 
 `setup.sh` checks your Mac, builds DXVK, vkd3d-shader and KosmicKrisp at pinned versions with this repo's patches (about 4 minutes, once), copies the game's exe, checks its sha256, translates it, builds the app and installs it. It never writes to the game folder. `./setup.sh --check` runs only the checks.
 
@@ -112,7 +112,7 @@ Each run writes a log to `~/Library/Logs/HarryPotterRecomp/`. It holds startup m
 
 ## Saves
 
-The game writes its saves and settings to its Windows profile folder. Wizard Bricks Recompiled redirects that folder to `~/Library/Application Support/HarryPotterRecomp`. It never writes to the game folder.
+The game writes its saves and settings to its Windows profile folder. The app redirects that folder to `~/Library/Application Support/HarryPotterRecomp`. It never writes to the game folder.
 
 The game's shader cache is in the same folder. If an update changes the shader compiler, the app clears the cache at the next launch; run `./setup.sh` again to rebuild it.
 
