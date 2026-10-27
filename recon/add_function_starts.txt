@@ -16,3 +16,7 @@
 # thunk (drop_function_starts.txt).
 0x404066
 0x40406B
+# ILT thunk `jmp 0x527280` that three .rdata dwords hold (first 0xC588BC), with no
+# function in the lift: Ghidra's start 0x404040, two bytes into the slot before,
+# covered it (recon_check.py data-pointer).
+0x404043
