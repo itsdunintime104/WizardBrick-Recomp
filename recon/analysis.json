@@ -10000,7 +10000,11 @@
   },
   {
    "addr": 4210752,
-   "size": 13
+   "size": 3
+  },
+  {
+   "addr": 4210755,
+   "size": 5
   },
   {
    "addr": 4210765,
@@ -308040,15 +308044,15 @@
    }
   ],
   "function_evidence": {
-   "candidates": 51682,
-   "kept": 44461,
+   "candidates": 51683,
+   "kept": 44462,
    "orphan": 20873,
    "call": 13255,
-   "jump": 462,
+   "jump": 461,
    "data": 5452,
    "imm": 938,
-   "thunk": 3185,
-   "listed": 296
+   "thunk": 3186,
+   "listed": 297
   }
  }
 }
