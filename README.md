@@ -81,11 +81,11 @@ Use `LEGOHarryPotter.exe` as Steam installs it. It has no copy protection to rem
    Without a folder, setup looks in `~/Games`, Steam under Wine, CrossOver or Whisky, other Steam libraries, GOG installs and external drives. If it finds nothing, it asks; you can drag the folder into Terminal.
 4. Open **LEGO Harry Potter Years 1-4** from `~/Applications`.
 
-`setup.sh` checks your Mac and builds the graphics libraries (about 4 minutes, the first time only). Then it copies the game's exe, checks it, translates it, builds the app and installs it. It never writes to the game folder.
+`setup.sh` checks your Mac and builds the graphics libraries (about 4 minutes, the first time only). Then it copies the game's exe, checks it, translates it, builds the app with a copy of the game folder inside it, and installs it. It never writes to the game folder.
 
 At the end, setup builds the game's shader cache. The game window opens for about 6 minutes and loads every level by itself; leave it open until it closes. This removes most of the stutter, but not all: see [Stutter and the shader warm-up](#stutter-and-the-shader-warm-up). `--no-warm` skips this step.
 
-Keep the cloned folder: the app reads the game's exe from `orig.nosync/` in it. The app remembers the game folder.
+The app holds its own copy of the game in `Contents/Resources/game`. On the same disk the copy is an APFS clone: it shares disk space with your game folder. After setup the app needs neither this repo nor your game folder. Keep the repo only to build the app again.
 
 | Option | Effect |
 |---|---|
@@ -116,7 +116,7 @@ The game fills your screen without a border, at your display's size and refresh 
 |---|---|
 | `HPRECOMP_WINDOWED=1` | A window at the game's render size |
 | `HPRECOMP_FULLSCREEN=1` | The game's own full screen, which changes the display mode |
-| `HPRECOMP_GAME_DIR` | The game folder, if you moved it after setup |
+| `HPRECOMP_GAME_DIR` | Another game folder to use instead of the copy inside the app |
 
 Each run writes a log to `~/Library/Logs/HarryPotterRecomp/`. It holds startup messages, warnings and errors, not what you do in the game. The app keeps the newest 20. Attach the log when you report a problem.
 
