@@ -44,7 +44,7 @@ This project is not affiliated with or endorsed by TT Games, Warner Bros. Games,
 - Xcode Command Line Tools
 - Homebrew with the packages listed in [Install](#install)
 - Python 3.11 or newer
-- About 3 GB of free disk space for the build, plus 6.3 GB for the game files
+- About 3 GB of free disk space for the build, plus 6.3 GB for the game files. The copy of the game inside the app takes no extra space when it is on the same disk
 
 ## Get the game files
 
@@ -85,8 +85,6 @@ Use `LEGOHarryPotter.exe` as Steam installs it. It has no copy protection to rem
 
 At the end, setup builds the game's shader cache. The game window opens for about 6 minutes and loads every level by itself; leave it open until it closes. This removes most of the stutter, but not all: see [Stutter and the shader warm-up](#stutter-and-the-shader-warm-up). `--no-warm` skips this step.
 
-The app holds its own copy of the game in `Contents/Resources/game`. On the same disk the copy is an APFS clone: it shares disk space with your game folder. After setup the app needs neither this repo nor your game folder. Keep the repo only to build the app again.
-
 | Option | Effect |
 |---|---|
 | `--check` | Only check the requirements |
@@ -94,6 +92,37 @@ The app holds its own copy of the game in `Contents/Resources/game`. On the same
 | `--no-install` | Build the app in `build.nosync/` without copying it to `~/Applications` |
 | `--no-warm` | Do not build the shader cache |
 | `--dry-run` | Print each step without running it |
+
+### What the app holds
+
+```
+~/Applications/LEGO Harry Potter Years 1-4.app
+  Contents/MacOS/            the translated game and its launcher
+  Contents/Frameworks/       DXVK, Vulkan, SDL and FAudio
+  Contents/Resources/game/   your copy of the game
+
+~/Library/Application Support/HarryPotterRecomp/   saves, settings and shader cache
+~/Library/Caches/HarryPotterRecomp/                shader caches
+~/Library/Logs/HarryPotterRecomp/                  logs
+```
+
+The game folder inside the app is an APFS clone of yours. On the same disk, a clone shares its disk space with the original, so it takes no extra space. On another disk, setup makes a full copy and says so.
+
+After setup the app needs neither this repo nor your game folder. You can delete the game folder or uninstall the game from Steam. That frees almost no disk space, because the clone holds the same data. Saves, settings and caches stay outside the app, so building it again does not touch them.
+
+### Build the app again
+
+To update to the latest version:
+
+```sh
+git pull && git submodule update --init && ./setup.sh --force "$HOME/Games/LEGO Harry Potter"
+```
+
+If you deleted the game folder, give setup the copy inside the app:
+
+```sh
+./setup.sh --force "$HOME/Applications/LEGO Harry Potter Years 1-4.app/Contents/Resources/game"
+```
 
 ## Playing
 
@@ -178,7 +207,8 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 
 | Problem | Fix |
 |---|---|
-| "game folder not found" | Run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks |
+| `setup.sh` says `LEGOHarryPotter.exe not found` | Run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks. If you deleted the game folder, see [Build the app again](#build-the-app-again) |
+| The app says "LEGO Harry Potter: Years 1-4 was not found" | The app has no game inside. Run `./setup.sh` again |
 | `setup.sh` says the checksum does not match | Only the unchanged Steam build 660 exe works. If a tool such as Steamless changed it, get the original back: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. A GOG copy with another checksum does not work yet |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
 | Short stutter during play | New shaders are compiling. It fades as you revisit areas. If it happens everywhere, the caches were cleared: run `./setup.sh` again. See [Stutter and the shader warm-up](#stutter-and-the-shader-warm-up) |
