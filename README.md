@@ -59,6 +59,14 @@ Steam for Mac does not download this game, because it has no Mac version. Use on
 
 Use `LEGOHarryPotter.exe` as Steam installs it. It has no copy protection to remove, so do not run Steamless or any other patcher on it. `setup.sh` checks the file's SHA-256 checksum and stops if the file was changed.
 
+To skip that check and build from another `LEGOHarryPotter.exe` anyway, add `--ignore-checksum`:
+
+```sh
+./setup.sh --ignore-checksum "$HOME/Games/LEGO Harry Potter"
+```
+
+This is not supported. The translation is made for the one supported file, so with another file the build may fail or the game may crash.
+
 **GOG copy.** [GOG sells the game](https://www.gog.com/en/game/lego_harry_potter_years_14) too, but it is not tested. `setup.sh` accepts it only if its `LEGOHarryPotter.exe` is the same file as the Steam build 660 (checksum `21c2d30c07e3ac68…`). If its checksum is different, you can try it with `--ignore-checksum` (see the options below). Open an issue with the checksum that `setup.sh` prints and say if the game ran.
 
 ## Install
