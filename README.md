@@ -59,7 +59,7 @@ Steam for Mac does not download this game, because it has no Mac version. Use on
 
 Use `LEGOHarryPotter.exe` as Steam installs it. It has no copy protection to remove, so do not run Steamless or any other patcher on it. `setup.sh` checks the file's SHA-256 checksum and stops if the file was changed.
 
-**GOG copy.** [GOG sells the game](https://www.gog.com/en/game/lego_harry_potter_years_14) too, but it is not tested. `setup.sh` accepts it only if its `LEGOHarryPotter.exe` is the same file as the Steam build 660 (checksum `21c2d30c07e3ac68…`). If you try it, open an issue with the checksum that `setup.sh` prints.
+**GOG copy.** [GOG sells the game](https://www.gog.com/en/game/lego_harry_potter_years_14) too, but it is not tested. `setup.sh` accepts it only if its `LEGOHarryPotter.exe` is the same file as the Steam build 660 (checksum `21c2d30c07e3ac68…`). If its checksum is different, you can try it with `--ignore-checksum` (see the options below). Open an issue with the checksum that `setup.sh` prints and say if the game ran.
 
 ## Install
 
@@ -89,6 +89,7 @@ At the end, setup builds the game's shader cache. The game window opens for abou
 |---|---|
 | `--check` | Only check the requirements |
 | `--force` | Translate again. Use it after `git pull` |
+| `--ignore-checksum` | Build from a `LEGOHarryPotter.exe` that is not the supported file. This is not supported: the build may fail or the game may crash |
 | `--no-install` | Build the app in `build.nosync/` without copying it to `~/Applications` |
 | `--no-warm` | Do not build the shader cache |
 | `--dry-run` | Print each step without running it |
@@ -209,7 +210,7 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 |---|---|
 | `setup.sh` says `LEGOHarryPotter.exe not found` | Run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks. If you deleted the game folder, see [Build the app again](#build-the-app-again) |
 | The app says "LEGO Harry Potter: Years 1-4 was not found" | The app has no game inside. Run `./setup.sh` again |
-| `setup.sh` says the checksum does not match | Only the unchanged Steam build 660 exe works. If a tool such as Steamless changed it, get the original back: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. A GOG copy with another checksum does not work yet |
+| `setup.sh` says the checksum does not match | Only the unchanged Steam build 660 exe works. If a tool such as Steamless changed it, get the original back: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. An exe with another checksum, such as a GOG copy, is not supported. To try it anyway, add `--ignore-checksum`; the build may fail or the game may crash |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
 | Short stutter during play | New shaders are compiling. It fades as you revisit areas. If it happens everywhere, the caches were cleared: run `./setup.sh` again. See [Stutter and the shader warm-up](#stutter-and-the-shader-warm-up) |
 
