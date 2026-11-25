@@ -48,18 +48,19 @@ This project is not affiliated with or endorsed by TT Games, Warner Bros. Games,
 
 ## Get the game files
 
-Steam for Mac does not download this game, because it has no Mac version. Use one of these ways, with your own Steam licence:
+Steam for Mac does not download this game, because it has no Mac version. Use one of these ways, with your own Steam licence. Each way gives you one **game folder** on your Mac. It holds `LEGOHarryPotter.exe` and seven `GAME*.DAT` files.
 
-1. **SteamCMD** (no Windows PC needed). Download [SteamCMD for macOS](https://steamcdn-a.akamaihd.net/client/installer/steamcmd_osx.tar.gz), unpack it, and run:
+1. **SteamCMD** (no Windows PC needed). Download [SteamCMD for macOS](https://steamcdn-a.akamaihd.net/client/installer/steamcmd_osx.tar.gz), unpack it, and run this in the unpacked folder:
    ```sh
    ./steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir "$HOME/Games/LEGO Harry Potter" +login <your Steam user> +app_update 21130 validate +quit
    ```
-2. **A Windows PC**: install the game with Steam and copy the `LEGO Harry Potter` folder to your Mac.
-3. **Steam inside Wine, CrossOver or Whisky**: `setup.sh` finds the game there.
+   The game folder is then `~/Games/LEGO Harry Potter`.
+2. **A Windows PC**: install the game with Steam. In Steam, right-click the game and choose *Manage*, then *Browse local files*. Copy that whole `LEGO Harry Potter` folder to your Mac. Put it in a folder named `Games` in your home folder, so that it is `~/Games/LEGO Harry Potter`.
+3. **Steam inside Wine, CrossOver or Whisky**: leave the game where Steam put it. `setup.sh` finds it there.
 
 Use `LEGOHarryPotter.exe` as Steam installs it. It has no copy protection to remove, so do not run Steamless or any other patcher on it. `setup.sh` checks the file's SHA-256 checksum and stops if the file was changed.
 
-To skip that check and build from another `LEGOHarryPotter.exe` anyway, add `--ignore-checksum`:
+To skip that check and build from another `LEGOHarryPotter.exe` anyway, add `--ignore-checksum` to the setup command of [Install](#install):
 
 ```sh
 ./setup.sh --ignore-checksum "$HOME/Games/LEGO Harry Potter"
@@ -71,6 +72,22 @@ This is not supported. The translation is made for the one supported file, so wi
 
 ## Install
 
+You work with two folders. Keep them apart: do not put one inside the other, and do not copy files from one to the other.
+
+```
+~/Games/LEGO Harry Potter/    the game folder, from "Get the game files"
+  LEGOHarryPotter.exe
+  GAME*.DAT                   seven files
+  ...
+
+~/WizardBrick-Recomp/         this project; "git clone" in step 3 makes it
+  setup.sh                    the script you run
+  engine/                     the translator; "git clone" fills it
+  ...
+```
+
+Both folders can be in other places. You tell `setup.sh` where the game folder is.
+
 1. Install the Xcode Command Line Tools, and wait until the installer says it is done:
    ```sh
    xcode-select --install
@@ -80,14 +97,19 @@ This is not supported. The translation is made for the one supported file, so wi
    brew install sdl2 sdl3 faudio vulkan-loader vulkan-headers meson ninja pkgconf glslang \
        llvm spirv-llvm-translator spirv-tools zstd autoconf automake libtool bison flex mingw-w64 python
    ```
-3. Get the code and run the setup script:
+3. Get the code. Open Terminal and run:
    ```sh
+   cd ~
    git clone --recurse-submodules https://github.com/itsdunintime104/WizardBrick-Recomp.git
    cd WizardBrick-Recomp
+   ```
+   This makes the folder `WizardBrick-Recomp` in your home folder and moves Terminal into it. Do not use GitHub's **Download ZIP** instead: its `engine/` folder is empty, and setup cannot run from it.
+4. Run setup in that folder. Give it the game folder:
+   ```sh
    ./setup.sh "$HOME/Games/LEGO Harry Potter"
    ```
-   Without a folder, setup looks in `~/Games`, Steam under Wine, CrossOver or Whisky, other Steam libraries, GOG installs and external drives. If it finds nothing, it asks; you can drag the folder into Terminal.
-4. Open **LEGO Harry Potter Years 1-4** from `~/Applications`.
+   If your game folder is in another place, type `./setup.sh ` with a space after it, drag the game folder into the Terminal window, and press Return. Without a folder, setup looks in `~/Games`, Steam under Wine, CrossOver or Whisky, other Steam libraries, GOG installs and external drives. If it finds nothing, it asks.
+5. Open **LEGO Harry Potter Years 1-4** from `~/Applications`.
 
 `setup.sh` checks your Mac and builds the graphics libraries (about 4 minutes, the first time only). Then it copies the game's exe, checks it, translates it, builds the app with a copy of the game folder inside it, and installs it. It never writes to the game folder.
 
@@ -216,7 +238,8 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 
 | Problem | Fix |
 |---|---|
-| `setup.sh` says `LEGOHarryPotter.exe not found` | Run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks. If you deleted the game folder, see [Build the app again](#build-the-app-again) |
+| `setup.sh` says the `engine/` folder is empty, or `engine/windows/setup.sh: No such file or directory` | The engine is a git submodule. A ZIP download does not include it: delete that folder and get the repo with `git clone --recurse-submodules` (see [Install](#install)). In a git clone, run `git submodule update --init` |
+| `setup.sh` says `LEGOHarryPotter.exe not found`, or `no GAME*.DAT files` | Give setup the folder that holds both `LEGOHarryPotter.exe` and the `GAME*.DAT` files: run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks. If you deleted the game folder, see [Build the app again](#build-the-app-again) |
 | The app says "LEGO Harry Potter: Years 1-4 was not found" | The app has no game inside. Run `./setup.sh` again |
 | `setup.sh` says the checksum does not match | Only the unchanged Steam build 660 exe works. If a tool such as Steamless changed it, get the original back: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. An exe with another checksum, such as a GOG copy, is not supported. To try it anyway, add `--ignore-checksum`; the build may fail or the game may crash |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
