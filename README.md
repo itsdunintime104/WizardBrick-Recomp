@@ -68,7 +68,7 @@ To skip that check and build from another `LEGOHarryPotter.exe` anyway, add `--i
 
 This is not supported. The translation is made for the one supported file, so with another file the build may fail or the game may crash.
 
-**GOG copy.** [GOG sells the game](https://www.gog.com/en/game/lego_harry_potter_years_14) too, but it is not tested. `setup.sh` accepts it only if its `LEGOHarryPotter.exe` is the same file as the Steam build 660 (checksum `21c2d30c07e3ac68…`). If its checksum is different, you can try it with `--ignore-checksum` (see the options below). Open an issue with the checksum that `setup.sh` prints and say if the game ran.
+**GOG copy.** [GOG sells the game](https://www.gog.com/en/game/lego_harry_potter_years_14) too, but it is not tested. `setup.sh` accepts it only if its `LEGOHarryPotter.exe` is the same file as the Steam build 660 (checksum `21c2d30c07e3ac68…`). If its checksum is different, you can try it with `./setup.sh --ignore-checksum "$HOME/Games/LEGO Harry Potter"`, using the path of your GOG game folder. Open an issue with the checksum that `setup.sh` prints and say if the game ran.
 
 ## Install
 
@@ -109,6 +109,11 @@ Both folders can be in other places. You tell `setup.sh` where the game folder i
    ./setup.sh "$HOME/Games/LEGO Harry Potter"
    ```
    If your game folder is in another place, type `./setup.sh ` with a space after it, drag the game folder into the Terminal window, and press Return. Without a folder, setup looks in `~/Games`, Steam under Wine, CrossOver or Whisky, other Steam libraries, GOG installs and external drives. If it finds nothing, it asks.
+
+   If setup says the checksum does not match, you can build from your exe anyway. This is not supported: the build may fail or the game may crash.
+   ```sh
+   ./setup.sh --ignore-checksum "$HOME/Games/LEGO Harry Potter"
+   ```
 5. Open **LEGO Harry Potter Years 1-4** from `~/Applications`.
 
 `setup.sh` checks your Mac and builds the graphics libraries (about 4 minutes, the first time only). Then it copies the game's exe, checks it, translates it, builds the app with a copy of the game folder inside it, and installs it. It never writes to the game folder.
@@ -119,7 +124,7 @@ At the end, setup builds the game's shader cache. The game window opens for abou
 |---|---|
 | `--check` | Only check the requirements |
 | `--force` | Translate again. Use it after `git pull` |
-| `--ignore-checksum` | Build from a `LEGOHarryPotter.exe` that is not the supported file. This is not supported: the build may fail or the game may crash |
+| `--ignore-checksum` | Build from a `LEGOHarryPotter.exe` that is not the supported file: `./setup.sh --ignore-checksum "$HOME/Games/LEGO Harry Potter"`. This is not supported: the build may fail or the game may crash |
 | `--no-install` | Build the app in `build.nosync/` without copying it to `~/Applications` |
 | `--no-warm` | Do not build the shader cache |
 | `--dry-run` | Print each step without running it |
@@ -241,7 +246,7 @@ Tested on a MacBook Pro 16-inch (2021) with an M1 Max (10-core CPU, 32-core GPU,
 | `setup.sh` says the `engine/` folder is empty, or `engine/windows/setup.sh: No such file or directory` | The engine is a git submodule. A ZIP download does not include it: delete that folder and get the repo with `git clone --recurse-submodules` (see [Install](#install)). In a git clone, run `git submodule update --init` |
 | `setup.sh` says `LEGOHarryPotter.exe not found`, or `no GAME*.DAT files` | Give setup the folder that holds both `LEGOHarryPotter.exe` and the `GAME*.DAT` files: run `./setup.sh "<game folder>"`, or drag the folder into Terminal when setup asks. If you deleted the game folder, see [Build the app again](#build-the-app-again) |
 | The app says "LEGO Harry Potter: Years 1-4 was not found" | The app has no game inside. Run `./setup.sh` again |
-| `setup.sh` says the checksum does not match | Only the unchanged Steam build 660 exe works. If a tool such as Steamless changed it, get the original back: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. An exe with another checksum, such as a GOG copy, is not supported. To try it anyway, add `--ignore-checksum`; the build may fail or the game may crash |
+| `setup.sh` says the checksum does not match | Only the unchanged Steam build 660 exe works. If a tool such as Steamless changed it, get the original back: run SteamCMD's `app_update 21130 validate`, or Steam's *Verify integrity of game files*. An exe with another checksum, such as a GOG copy, is not supported. To try it anyway, run `./setup.sh --ignore-checksum "$HOME/Games/LEGO Harry Potter"`; the build may fail or the game may crash |
 | macOS says the app is damaged | Build the app with `setup.sh` on your own Mac. A copy from another Mac does not run |
 | Short stutter during play | New shaders are compiling. It fades as you revisit areas. If it happens everywhere, the caches were cleared: run `./setup.sh` again. See [Stutter and the shader warm-up](#stutter-and-the-shader-warm-up) |
 
